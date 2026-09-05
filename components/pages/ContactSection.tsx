@@ -4,7 +4,7 @@ import Subtitle from '../ui/Subtitle';
 
 const ContactSection = () => {
     return (
-        <section className="relative flex flex-col h-svh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-6 px-4 sm:px-8 lg:px-16">
+        <section className="relative flex flex-col h-lvh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-6 px-4 sm:px-8 lg:px-16">
             
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
                 <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK." /> 
