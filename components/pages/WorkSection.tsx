@@ -243,12 +243,11 @@ const WorkSection = () => {
     };
 
     return (
-        <section className="relative flex flex-col h-lvh w-full items-center overflow-hidden pt-16 lg:pt-20 pb-6 px-4 sm:px-8 lg:px-16">
+        <section className="relative flex flex-col h-lvh w-full items-center overflow-hidden pt-15 lg:pt-20 pb-6 px-4 sm:px-8 lg:px-16">
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
                 <Subtitle subtitleContent="THINGS I'VE BUILT. PROBLEMS I'VE SOLVED." />
             </div>
-            <main className="z-10 flex flex-col lg:flex-row items-center justify-center h-full w-full max-w-7xl mx-auto p-4 sm:p-6 gap-3 sm:gap-4">
-                
+            <main className="z-10 flex-1 min-h-0 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center p-2 sm:p-4 gap-3 sm:gap-4 lg:aspect-16/10 lg:max-h-[calc(100vh-140px)]">   
                 
 
                 {projects.map((project) => {
