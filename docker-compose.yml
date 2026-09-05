@@ -1,0 +1,16 @@
+services:
+  david-vasseur:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: david-vasseur
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - nginx-network
+
+# Réseaux externes existants
+networks:
+  nginx-network:
+    external: true
