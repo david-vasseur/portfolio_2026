@@ -4,7 +4,7 @@ import TechStackHome from "../features/TechStackHome";
 
 const HomeSection = () => {
     return (
-        <section className="relative flex h-lvh w-full items-center pt-15 lg:pt-20 justify-center overflow-hidden p-4 sm:p-8 lg:p-12">
+        <section className="relative flex h-svh w-full items-center pt-15 lg:pt-20 justify-center overflow-hidden p-4 sm:p-8 lg:p-12">
             {/* 
               - Mobile : h-full pour occuper l'espace verticalement.
               - Desktop (lg) : 

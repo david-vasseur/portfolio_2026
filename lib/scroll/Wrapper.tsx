@@ -56,22 +56,36 @@ function Wrapper({ children }: { children: React.ReactNode }) {
             type: "wheel,touch",
             tolerance: 30,
             preventDefault: true,
-            onDown: () => { // Scroll vers le bas / Swipe vers le haut -> Section suivante
+            // onChange s'active à chaque mouvement (wheel ou touch)
+            onChange: (self) => {
                 if (isScrollingRef.current) return;
-                if (currentIndexRef.current < pageCount - 1) {
-                    navigateTo(currentIndexRef.current + 1);
-                }
-            },
-            onUp: () => { // Scroll vers le haut / Swipe vers le bas -> Section précédente
-                if (isScrollingRef.current) return;
-                if (currentIndexRef.current > 0) {
-                    navigateTo(currentIndexRef.current - 1);
+
+                // self.deltaY donne la direction du mouvement :
+                // Positif (> 0) = mouvement vers le bas (ou swipe vers le haut)
+                // Négatif (< 0) = mouvement vers le haut (ou swipe vers le bas)
+                // Sur le tactile mobile, l'inertie native de GSAP Observer a parfois besoin d'être inversée.
+                // Si le touch est inversé, on multiplie deltaY par -1 pour le tactile, ou on gère globalement.
+                
+                const isTouch = self.event.type.includes('touch');
+                const multiplier = isTouch ? -1 : 1; 
+                const direction = self.deltaY * multiplier;
+
+                if (direction > 0) {
+                    // Aller vers la page suivante
+                    if (currentIndexRef.current < pageCount - 1) {
+                        navigateTo(currentIndexRef.current + 1);
+                    }
+                } else if (direction < 0) {
+                    // Aller vers la page précédente
+                    if (currentIndexRef.current > 0) {
+                        navigateTo(currentIndexRef.current - 1);
+                    }
                 }
             },
         });
 
         return () => obs.kill();
-    }, { scope: containerRef, dependencies: [hasHydrated, pageCount] }); // Reinstancié uniquement si la page s'hydrate
+    }, { scope: containerRef, dependencies: [hasHydrated, pageCount] });
 
     if (!hasHydrated) return null;
 
