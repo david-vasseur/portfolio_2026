@@ -202,10 +202,10 @@ const ServicesAndWorkHome = () => {
             <div className="featured relative flex min-w-0 flex-1 flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-black/20 p-5">
                 {/* ambient light */}
 
-                <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-white/[0.04] blur-3xl" />
+                <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-white/4 blur-3xl" />
 
                 <div className="relative z-10 flex items-center justify-between">
-                    <span className="featured-tag inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[9px] uppercase tracking-[0.15em] text-white/60">
+                    <span className="featured-tag inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[9px] uppercase tracking-[0.15em] text-white/60">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
                         Featured work
                     </span>
@@ -220,7 +220,7 @@ const ServicesAndWorkHome = () => {
                         TrouveTonMarché
                     </span>
 
-                    <h4 className="max-w-lg text-lg font-medium tracking-[-0.025em] text-white sm:text-xl">
+                    <h4 className="max-w-lg text-lg font-medium tracking-tight text-white sm:text-xl">
                         Une architecture full-stack pensée de bout en bout.
                     </h4>
 

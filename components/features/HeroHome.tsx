@@ -1,6 +1,8 @@
 import React from 'react';
 import Title from '../ui/Title';
 import Subtitle from '../ui/Subtitle';
+import { ButtonCTA } from '../ui/ButtonCTA';
+import { ArrowDown, ArrowUpRight, FileDown } from 'lucide-react';
 
 const HeroHome = () => {
     return (
@@ -8,11 +10,11 @@ const HeroHome = () => {
             
             {/* === 1. IMAGE D'ARRIÈRE-PLAN AVEC MASK ET GRADIENT === */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent lg:bg-gradient-to-r lg:from-white/95 lg:via-white/60 lg:to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-text-1/90 via-text-1/40 to-transparent lg:bg-linear-to-r lg:from-text-1/95 lg:via-text-1/40 lg:to-transparent" />
                 <img 
                     src="right_png.png" /* Remplace par le chemin de ta photo */
                     alt="David Vasseur" 
-                    className="absolute right-0 lg:-right-20 bottom-0 h-full w-full lg:w-3/5 object-cover object-top opacity-20 lg:opacity-85 mix-blend-multiply filter contrast-105 [mask-image:linear-gradient(to_top,transparent_5%,black_50%)] lg:[mask-image:linear-gradient(to_right,transparent_0%,black_50%)]"
+                    className="absolute right-0 lg:-right-20 bottom-0 h-full w-full lg:w-3/5 object-cover object-top opacity-20 lg:opacity-85 mix-blend-multiply filter contrast-105 mask-[linear-gradient(to_top,transparent_5%,black_50%)] lg:mask-[linear-gradient(to_right,transparent_0%,black_50%)]"
                 />
                 {/* Overlay supplémentaire pour assurer la lisibilité du texte */}
                   </div>
@@ -41,18 +43,23 @@ const HeroHome = () => {
                 
                 {/* Boutons d'action */}
                 <div className="flex flex-col sm:flex-row items-center gap-3">
-                    <a 
+                    <ButtonCTA 
                         href="#work" 
-                        className="w-full shadow-xl shadow-black/40 sm:w-auto text-center bg-slate-900 text-white font-medium px-6 py-3 rounded-2xl hover:bg-slate-800 transition-all hover:shadow-lg active:scale-95"
+                        variant="glowMesh" 
+                        size="md"
+                        icon={<ArrowUpRight className="w-4 h-4" />}
                     >
                         View my projects
-                    </a>
-                    <a 
-                        href="#contact" 
-                        className="w-full shadow-xl shadow-black/30 sm:w-auto text-center bg-white/80 text-slate-800 font-medium px-6 py-3 rounded-2xl border border-slate-200 hover:bg-white transition-all active:scale-95"
+                    </ButtonCTA>
+                    <ButtonCTA 
+                        href="/cv.pdf" 
+                        download
+                        variant="glass" 
+                        size="md"
+                        icon={<FileDown className="w-4 h-4 text-slate-800 group-hover:text-emerald-400 transition-colors" />}
                     >
                         Download CV
-                    </a>
+                    </ButtonCTA>
                 </div>
 
                 {/* Icônes de contact rapide */}

@@ -78,7 +78,7 @@ const Title = ({ titleContent }: TitleProps) => {
     });
 
     return (
-        <h2 ref={titleRef}>
+        <h1 ref={titleRef}>
             {titleContent.map((span, index) => (
                 <React.Fragment key={index}>
                     <span className="text-black text-shadow-[0_0_5px_#5F606A] inline-block h-[2em] lg:h-[5em] xl:h-[6em] overflow-hidden align-bottom">
@@ -91,7 +91,7 @@ const Title = ({ titleContent }: TitleProps) => {
                     {window.innerWidth < 1024 && index < titleContent.length - 1 && <span className="inline-block w-2" />}
                 </React.Fragment>
             ))}
-        </h2>
+        </h1>
     );
 }
 

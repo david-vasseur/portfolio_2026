@@ -16,11 +16,11 @@ const NavBar = () => {
         <nav className="fixed top-2 lg:top-5 left-1/2 z-50 -translate-x-1/2">
             <div className="flex flex-col items-center justify-center">
 
-                <span className="mb-2 lg:mb-4 text-base lg:text-xl font-anta font-medium uppercase tracking-[0.25em] text-white">
+                <span className="mb-2 text-shadow-[0_0_5px_#FFC9FF] lg:mb-4 text-base lg:text-xl font-anta font-medium uppercase tracking-[0.25em] text-white">
                     {pages[currentIndex]}
                 </span>
 
-                <div className="flex items-center gap-2 lg:gap-3">
+                <div className="flex items-center gap-2 lg:gap-2">
                     {pages.map((page, index) => (
                         <button
                             key={page}

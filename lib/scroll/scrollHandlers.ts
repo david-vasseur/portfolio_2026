@@ -4,16 +4,25 @@ export const createWheelHandler = (
     childrenCount: number,
     isScrollingRef: React.RefObject<boolean>
 ) => {
-    return (e: WheelEvent) => {
-        if (isScrollingRef.current) return;
+    let inertiaTimer: ReturnType<typeof setTimeout> | null = null;
 
+    return (e: WheelEvent) => {
+        const threshold = 35; // Seuil minimum pour ignorer les micro-mouvements
+
+        // 1. À chaque événement wheel (même d'inertie), on repousse le déverrouillage
+        if (inertiaTimer) clearTimeout(inertiaTimer);
+        
+        inertiaTimer = setTimeout(() => {
+            isScrollingRef.current = false;
+        }, 250); // Se déverrouille 250ms APRÈS l'arrêt complet des événements du trackpad
+
+        // 2. Si un scroll est déjà verrouillé ou si l'impulsion est trop faible, on sort
+        if (isScrollingRef.current || Math.abs(e.deltaY) < threshold) return;
+
+        // 3. On verrouille
         isScrollingRef.current = true;
 
         const maxIndex = childrenCount - 1;
-
-        setTimeout(() => {
-            isScrollingRef.current = false;
-        }, 1000);
 
         if (e.deltaY > 0) {
             navigateTo(Math.min(currentIndex + 1, maxIndex));

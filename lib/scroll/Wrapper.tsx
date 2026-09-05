@@ -1,26 +1,34 @@
-"use client";
+"use client"
 
-
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { Observer } from 'gsap/Observer';
+import { useGSAP } from '@gsap/react';
 import { usePageIndexStore } from '../store/pageIndexStore';
-import { createTouchHandler, createWheelHandler } from './scrollHandlers';
 import Transitions, { TransitionHandle } from '@/components/layout/Transitions';
+
+gsap.registerPlugin(Observer);
 
 function Wrapper({ children }: { children: React.ReactNode }) {
     const { currentIndex, setCurrentIndex, hasHydrated } = usePageIndexStore();
 
-    const touchStartY = useRef<number | null>(null);
-    const touchEndY = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const isScrollingRef = useRef<boolean>(false);
     const transitionRef = useRef<TransitionHandle | null>(null);
 
+    // Ref pour maintenir l'index toujours à jour sans détruire l'Observer
+    const currentIndexRef = useRef(currentIndex);
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex]);
+
     const pageCount = React.Children.count(children);
 
-    const navigateTo = (index: number) => {
+    const navigateTo = (newIndex: number) => {
         if (isScrollingRef.current) return;
 
-        const clamped = Math.max(0, Math.min(index, pageCount - 1));
+        const clamped = Math.max(0, Math.min(newIndex, pageCount - 1));
+        if (clamped === currentIndexRef.current) return;
 
         isScrollingRef.current = true;
 
@@ -35,67 +43,43 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (hasHydrated && currentIndex >= pageCount) {
-        setCurrentIndex(pageCount - 1);
+            setCurrentIndex(pageCount - 1);
         }
     }, [hasHydrated, currentIndex, pageCount, setCurrentIndex]);
 
-    // const handleWheel = useCallback(
-    //     createWheelHandler(setCurrentIndex, pageCount, isScrollingRef),
-    //     [setCurrentIndex, pageCount]
-    // );
+    // Initialisation UNIQUE de GSAP Observer
+    useGSAP(() => {
+        if (!hasHydrated || !containerRef.current) return;
 
-    const handleWheel = useCallback(
-        (e: WheelEvent) => {
-            const maxIndex = pageCount - 1;
+        const obs = Observer.create({
+            target: containerRef.current,
+            type: "wheel,touch",
+            tolerance: 30,
+            preventDefault: true,
+            onDown: () => { // Scroll vers le bas / Swipe vers le haut -> Section suivante
+                if (isScrollingRef.current) return;
+                if (currentIndexRef.current < pageCount - 1) {
+                    navigateTo(currentIndexRef.current + 1);
+                }
+            },
+            onUp: () => { // Scroll vers le haut / Swipe vers le bas -> Section précédente
+                if (isScrollingRef.current) return;
+                if (currentIndexRef.current > 0) {
+                    navigateTo(currentIndexRef.current - 1);
+                }
+            },
+        });
 
-            if (e.deltaY > 0) {
-                if (currentIndex >= maxIndex) return;
-                navigateTo(currentIndex + 1);
-            } else {
-                if (currentIndex <= 0) return;
-                navigateTo(currentIndex - 1);
-            }
-        },
-        [currentIndex, pageCount, navigateTo]
-    );
+        return () => obs.kill();
+    }, { scope: containerRef, dependencies: [hasHydrated, pageCount] }); // Reinstancié uniquement si la page s'hydrate
 
-    const { handleTouchStart, handleTouchMove, handleTouchEnd } = useMemo(
-        () =>
-        createTouchHandler(
-            navigateTo,
-            currentIndex,
-            pageCount,
-            touchStartY,
-            touchEndY,
-            isScrollingRef
-        ),
-        [currentIndex, pageCount]
-    );
-
-    useEffect(() => {
-        const node = containerRef.current;
-        if (!node || !hasHydrated) return;
-
-        node.addEventListener('wheel', handleWheel, { passive: false });
-        node.addEventListener('touchstart', handleTouchStart, { passive: true });
-        node.addEventListener('touchmove', handleTouchMove, { passive: true });
-        node.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-        return () => {
-        node.removeEventListener('wheel', handleWheel);
-        node.removeEventListener('touchstart', handleTouchStart);
-        node.removeEventListener('touchmove', handleTouchMove);
-        node.removeEventListener('touchend', handleTouchEnd);
-        };
-    }, [handleWheel, hasHydrated]);
-
-    if (!hasHydrated) return null; // ⛔ Bloque le rendu avant hydratation
+    if (!hasHydrated) return null;
 
     return (
-        <div id="#wrapper" className="relative max-h-[300lvh]" ref={containerRef}>
+        <div id="wrapper" className="relative max-h-[300lvh]" ref={containerRef}>
             <Transitions ref={transitionRef} />
             <div
-                id="#inner"
+                id="inner"
                 className="h-[300lvh] w-screen overflow-x-hidden transition-transform duration-250 ease-in-out overflow-y-hidden"
                 style={{ transform: `translateY(-${currentIndex * 100}lvh)` }}
             >
