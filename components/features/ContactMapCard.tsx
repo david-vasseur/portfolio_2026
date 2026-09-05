@@ -12,10 +12,10 @@ const ContactMapCard = () => {
     const coords = [48.8566, 2.3522]; // Tes coordonnées [Lat, Lng]
 
     return (
-        <div className="relative col-span-1 lg:col-span-2 row-span-3 w-full h-full min-h-95 overflow-hidden rounded-3xl border border-white/10 bg-slate-950/40 backdrop-blur-md shadow-2xl flex flex-col justify-between p-6 sm:p-8 group">
+        <div className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-slate-950/40 backdrop-blur-md shadow-2xl flex flex-col justify-between p-6 sm:p-8 group">
             
             {/* === ARRIÈRE-PLAN : VRAIE CARTE LEAFLET SOMBRE === */}
-            <div className="absolute inset-0 z-0 opacity-60 transition-opacity duration-500 group-hover:opacity-80">
+            <div className="absolute hidden lg:block inset-0 z-0 opacity-60 transition-opacity duration-500 group-hover:opacity-80">
                 <MapComponent position={coords} />
                 {/* Dégradé pour intégrer la carte harmonieusement */}
                 <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-slate-950 via-slate-950/20 to-slate-950/60 z-10" />
@@ -28,14 +28,14 @@ const ContactMapCard = () => {
                     <span>Estezargues & Remote</span>
                 </div>
 
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/50 border border-white/10 backdrop-blur-md text-slate-300 text-xs font-mono">
+                <div className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/50 border border-white/10 backdrop-blur-md text-slate-300 text-xs font-mono">
                     <Clock className="w-3 h-3 text-blue-400" />
                     <span>UTC+2</span>
                 </div>
             </div>
 
             {/* === MILIEU : TEXTE === */}
-            <div className="relative z-20 my-auto py-6">
+            <div className="hidden lg:block relative z-20 my-auto py-6">
                 <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">
                     Me contacter
                 </span>

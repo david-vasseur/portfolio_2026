@@ -73,7 +73,7 @@ const Subtitle = ({ subtitleContent }: SubtitleProps) => {
     return (
         <p
             ref={subtitleRef}
-            className="max-w-2xl text-center text-lg leading-relaxed text-text-1 italic"
+            className="max-w-2xl text-center text-sm lg:text-lg leading-relaxed text-text-1 italic"
         >
             {subtitleContent}
         </p>

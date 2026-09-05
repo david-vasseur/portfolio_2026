@@ -4,19 +4,19 @@ import Subtitle from '../ui/Subtitle';
 
 const ContactSection = () => {
     return (
-       <section className="relative flex h-svh w-full items-center overflow-hidden pt-15 lg:pt-20 pb-5 px-5 sm:px-12 lg:px-20">
-            {/* Mobile : 1 colonne, 3 lignes avec un ratio 3:1:1 (60% / 20% / 20%) */}
-            {/* Desktop (lg) : 1 ligne, 3 colonnes de taille égale */}
-            <main className="z-10 grid h-full w-full max-w-7xl mx-auto py-4 gap-4 grid-cols-1 grid-rows-[1fr_4fr_4fr] lg:grid-cols-3 ">
-                
-                <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
-                    <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK." /> 
-                </div>
-                <ContactForm />
-                <ContactMapCard />
-            </main>
+        <section className="relative flex flex-col h-svh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-6 px-4 sm:px-8 lg:px-16">
+            
+            <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
+                <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK." /> 
+            </div>
 
-        </section>
+            <main className="z-10 min-h-0 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch justify-center p-2 sm:p-4 gap-3 sm:gap-4 lg:aspect-video"> 
+                <div className="relative gap-2 col-span-1 lg:col-span-3 w-full flex flex-col lg:flex-row justify-center items-center overflow-hidden p-2 lg:p-6 text-left">
+                    <ContactForm />
+                    <ContactMapCard />
+                </div>               
+            </main>
+       </section>
     );
 }
 
