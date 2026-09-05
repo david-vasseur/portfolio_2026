@@ -41,7 +41,7 @@ const projects: Project[] = [
                 description:
                     "End-to-end design and development of a national e-commerce platform built with Next.js. Customer-facing experience, product catalog, checkout flow and administration interface were developed on a modern and scalable architecture.",
                 image:
-                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
+                    "/intro_compress.mp4",
                 techs: ["Next.js", "React", "TypeScript", "PostgreSQL"],
             },
             {
@@ -274,7 +274,7 @@ const WorkSection = () => {
                                 <div className="flex items-center justify-between z-20">
                                     <span 
                                         className={`
-                                            text-xs lg:translate-x-12 xl:translate-x-16 font-mono font-bold px-3 py-1 rounded-full border backdrop-blur-md transition-all text-center
+                                            text-xs lg:translate-x-12 xl:translate-x-13 font-mono font-bold px-3 py-1 rounded-full border backdrop-blur-md transition-all text-center
                                             ${isActive 
                                                 ? 'lg:ml-10 whitespace-nowrap' 
                                                 : 'w-full block truncate'
@@ -308,7 +308,7 @@ const WorkSection = () => {
                                 {/* PIED DE CARTE / CTA */}
                                 <div className="flex w-full lg:-translate-x-12 xl:-translate-x-16 items-center justify-between border-t border-white/10 pt-4 z-20">
                                     {isActive ? (
-                                        <div className="flex flex-wrap gap-2">
+                                        <div className="pl-4 truncate flex flex-wrap gap-2">
                                             {project.link.map((link, index) => (
                                                 <a
                                                     key={index}

@@ -68,23 +68,39 @@ export const ProjectSlider: React.FC<ProjectSliderProps> = ({
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* --- COUCHE 1 (Z-0) : IMAGES DU SLIDER --- */}
-            <div className="absolute scale-125 inset-0 z-0 overflow-hidden pointer-events-none rounded-2xl">
-                {slides.map((slide, index) => (
-                    <img
-                        key={slide.id}
-                        src={slide.image}
-                        alt={slide.title}
-                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
-                            index === currentSlide 
-                                ? 'opacity-50 scale-105' 
-                                : 'opacity-0 scale-100'
-                        }`}
-                    />
-                ))}
+            <div className="absolute inset-0 z-0 scale-115 overflow-hidden pointer-events-none rounded-2xl">
+                {slides.map((slide, index) => {
+                    const isVideo = slide.image.endsWith('.mp4');
+                    const transitionClasses = `absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
+                        index === currentSlide 
+                            ? 'opacity-50 scale-105' 
+                            : 'opacity-0 scale-100'
+                    }`;
+
+                    return isVideo ? (
+                        <video
+                            key={slide.id}
+                            src={slide.image}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="metadata"
+                            className={transitionClasses}
+                        />
+                    ) : (
+                        <img
+                            key={slide.id}
+                            src={slide.image}
+                            alt={slide.title}
+                            className={transitionClasses}
+                        />
+                    );
+                })}
             </div>
             {/* --- COUCHE 1.5 (Z-5) : OVERLAY BLANC RADIAL EN HAUT À GAUCHE --- */}
             <div 
-                className="absolute scale-125 w-full h-full inset-0 z-5 pointer-events-none bg-radial-[at_top_left] from-slate-900/90 via-slate-900/40 to-slate-900/5 from-10% via-40% to-60% transition-opacity duration-500 opacity-100" 
+                className="absolute scale-125 w-full h-full inset-0 z-5 pointer-events-none bg-radial-[at_top_left] from-slate-900/90 via-slate-900/40 to-transparent from-10% via-40% to-60% transition-opacity duration-500 opacity-100" 
             />
 
             {/* --- COUCHE 2 (Z-10) : OVERLAY COLORÉ RADIAL DE LA CARD --- */}
