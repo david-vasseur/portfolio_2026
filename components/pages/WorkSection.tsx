@@ -221,22 +221,20 @@ const WorkSection = () => {
 
     // Fonction de calcul des proportions asymétriques
     const getFlexClass = (projectId: number) => {
-        // La carte active prend la majorité de l'espace
-        if (projectId === activeId) return 'lg:flex-[8] flex-4';
+        // Sur mobile (par défaut), la carte active prend plus de place en hauteur (ex: flex-[3]), 
+        // et les inactives prennent un espace fixe réduit (ex: flex-1). 
+        // Sur desktop (lg:), on bascule sur les proportions en largeur.
 
-        // Cas 1 : Card 1 active -> Card 2 = flex-3, Card 3 = flex-2 (1/3 plus petite que Card 2)
+        if (projectId === activeId) return 'flex-[5] lg:flex-[8]';
+
         if (activeId === 1) {
-            return projectId === 2 ? 'lg:flex-[1.3] flex-1' : 'lg:flex-[1] flex-1 opacity-50';
+            return projectId === 2 ? 'flex-1 lg:flex-[1.3]' : 'flex-1 lg:flex-[1] opacity-50';
         }
-
-        // Cas 2 : Card 2 active -> Card 1 = flex-3, Card 3 = flex-2 (1/3 plus petite que Card 1)
         if (activeId === 2) {
-            return projectId === 1 ? 'lg:flex-[1.3] flex-1' : 'lg:flex-[1] flex-1 opacity-50';
+            return projectId === 1 ? 'flex-1 lg:flex-[1.3]' : 'flex-1 lg:flex-[1] opacity-50';
         }
-
-        // Cas 3 : Card 3 active -> Card 1 = flex-3, Card 2 = flex-2 (1/3 plus petite que Card 1)
         if (activeId === 3) {
-            return projectId === 1 ? 'lg:flex-[1.3] flex-1' : 'lg:flex-[1] flex-1 opacity-50';
+            return projectId === 1 ? 'flex-1 lg:flex-[1.3]' : 'flex-1 lg:flex-[1] opacity-50';
         }
 
         return 'flex-1';
@@ -247,7 +245,7 @@ const WorkSection = () => {
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
                 <Subtitle subtitleContent="THINGS I'VE BUILT. PROBLEMS I'VE SOLVED." />
             </div>
-            <main className="z-10 flex-1 min-h-0 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center p-2 sm:p-4 gap-3 sm:gap-4 lg:aspect-16/10 lg:max-h-[calc(100vh-140px)]">   
+            <main className="z-10 min-h-0 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch justify-center p-2 sm:p-4 gap-3 sm:gap-4 lg:aspect-video">   
                 
 
                 {projects.map((project) => {
@@ -260,11 +258,11 @@ const WorkSection = () => {
                             onClick={() => setActiveId(project.id)}
                             className={`
                                 relative h-full transition-all duration-500 ease-in-out cursor-pointer overflow-hidden rounded-2xl border border-white/10
-                                transform skew-x-0 lg:-skew-x-12
+                                transform skew-x-0 lg:-skew-x-12 shadow-black/50
                                 ${flexClass}
                                 ${isActive 
                                     ? 'bg-linear-to-br shadow-2xl ring-1 ring-white/20' 
-                                    : 'bg-slate-900/60 hover:bg-slate-800/60 opacity-60 hover:opacity-90'
+                                    : 'bg-slate-900/60 hover:bg-slate-800/60 opacity-60 hover:opacity-90 shadow-xl'
                                 }
                                 ${project.bgColor}
                             `}
@@ -276,7 +274,7 @@ const WorkSection = () => {
                                 <div className="flex items-center justify-between z-20">
                                     <span 
                                         className={`
-                                            text-xs translate-x-12 font-mono font-bold px-3 py-1 rounded-full border backdrop-blur-md transition-all text-center
+                                            text-xs lg:translate-x-12 xl:translate-x-16 font-mono font-bold px-3 py-1 rounded-full border backdrop-blur-md transition-all text-center
                                             ${isActive 
                                                 ? 'lg:ml-10 whitespace-nowrap' 
                                                 : 'w-full block truncate'
@@ -297,32 +295,6 @@ const WorkSection = () => {
 
                                 {/* CONTENU QUAND LA CARTE EST ACTIVE */}
                                 {isActive ? (
-                                    // <div className="my-auto lg:translate-x-10 space-y-4 max-w-xl animate-fadeIn z-10">
-                                    //     <div>
-                                    //         <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-                                    //             {project.title}
-                                    //         </h3>
-                                    //         <p className="text-xs sm:text-sm font-medium text-slate-400 mt-1">
-                                    //             {project.subtitle}
-                                    //         </p>
-                                    //     </div>
-
-                                    //     <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                    //         {project.description}
-                                    //     </p>
-
-                                    //     {/* Stacks techniques */}
-                                    //     <div className="flex flex-wrap gap-2 pt-2">
-                                    //         {project.techs.map((tech) => (
-                                    //             <span 
-                                    //                 key={tech} 
-                                    //                 className="text-xs font-medium px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 border border-white/10 backdrop-blur-sm"
-                                    //             >
-                                    //                 {tech}
-                                    //             </span>
-                                    //         ))}
-                                    //     </div>
-                                    // </div>
                                     <ProjectSlider slides={project.slides} isActive={isActive} bgColor={project.bgColor} />
                                 ) : (
                                     /* TITRE VERTICAL QUAND LA CARTE EST RÉDUITE */
@@ -334,7 +306,7 @@ const WorkSection = () => {
                                 )}
 
                                 {/* PIED DE CARTE / CTA */}
-                                <div className="flex w-full -translate-x-12 items-center justify-between border-t border-white/10 pt-4 z-20">
+                                <div className="flex w-full lg:-translate-x-12 xl:-translate-x-16 items-center justify-between border-t border-white/10 pt-4 z-20">
                                     {isActive ? (
                                         <div className="flex flex-wrap gap-2">
                                             {project.link.map((link, index) => (
@@ -352,7 +324,7 @@ const WorkSection = () => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="w-full line-clamp-2 text-center text-xs font-mono text-slate-500">
+                                        <div className="w-full text-center text-xs font-mono text-slate-500 truncate px-1">
                                             Extend
                                         </div>
                                     )}
