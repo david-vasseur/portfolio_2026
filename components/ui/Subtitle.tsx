@@ -80,4 +80,6 @@ const Subtitle = ({ subtitleContent }: SubtitleProps) => {
     );
 };
 
+
+
 export default Subtitle;

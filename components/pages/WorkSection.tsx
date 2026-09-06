@@ -51,7 +51,7 @@ const projects: Project[] = [
                 description:
                     "Development of a dedicated NestJS backend powering the entire administration area: product management, variants, orders, users and business data. The frontend communicates with this backend through a Next.js Backend-for-Frontend layer.",
                 image:
-                    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
+                    "/slide_201_compressed.mp4",
                 techs: ["NestJS", "Prisma", "PostgreSQL", "BFF"],
             },
             {
