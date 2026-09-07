@@ -14,11 +14,12 @@ interface CardContainerProps extends SVGProps<SVGSVGElement> {
     children?: React.ReactNode;
     action?: React.ReactNode;
     isClosed?: boolean;
+    handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export function CardContainer({
     className = "",
-    children,
+    handleSubmit,
     action,
     isClosed = false,
     ...props
@@ -101,17 +102,17 @@ export function CardContainer({
                     <radialGradient
                         id="radialGradient"
                         cx="0%"
-                        cy="0%"
+                        cy="20%"
                         r="100%"
                     >
                         <stop
-                            offset="0%"
-                            stopColor="white"
-                            stopOpacity="0.3"
+                            offset="10%"
+                            stopColor="#5F606A"
+                            stopOpacity="0.8"
                         />
 
                         <stop
-                            offset="50%"
+                            offset="70%"
                             stopColor="#10B981"
                             stopOpacity="0.15"
                         />
@@ -159,7 +160,68 @@ export function CardContainer({
                 ref={contentRef}
                 className="absolute inset-0 p-4 flex flex-col justify-between z-10"
             >
-                {children}
+                <div className="w-full">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-5">Get In Touch</h3>
+                    <form
+                        id="contact-form"
+                        className="space-y-4"
+                        onSubmit={handleSubmit}
+                    >
+                        {/* NOM */}
+                        <div className="space-y-1.5 sm:space-y-1">
+                            <label
+                                htmlFor="name"
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
+                            >
+                                Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="John Doe"
+                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                            />
+                        </div>
+
+                        {/* EMAIL */}
+                        <div className="space-y-1.5 sm:space-y-1">
+                            <label
+                                htmlFor="email"
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
+                            >
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="john@example.com"
+                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                            />
+                        </div>
+
+                        {/* MESSAGE */}
+                        <div className="space-y-1.5 sm:space-y-1">
+                            <label
+                                htmlFor="message"
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
+                            >
+                                Message
+                            </label>
+
+                            <textarea
+                                id="message"
+                                name="message"
+                                rows={4}
+                                placeholder="Tell me about your project..."
+                                className="w-full h-12 min-[390px]:h-20 sm:h-28 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                            />
+                        </div>
+                    </form>
+                </div>
             </div>
 
             {/* Bouton d'action */}

@@ -4,6 +4,9 @@ import React, { SVGProps, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import { FaGithub, FaLinkedin, FaMailBulk, FaPhoneAlt } from 'react-icons/fa';
+import { FaM } from 'react-icons/fa6';
+import { Mail } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(useGSAP, MorphSVGPlugin);
@@ -14,23 +17,24 @@ interface CardContainerProps extends SVGProps<SVGSVGElement> {
     children?: React.ReactNode;
     action?: React.ReactNode;
     isClosed?: boolean;
+    handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export function CardContainer2({
     className = "",
-    children,
+    handleSubmit,
     action,
     isClosed = false,
     ...props
 }: CardContainerProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const pathRef = useRef<SVGPathElement | null>(null);
+    const pathRef1 = useRef<SVGPathElement | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const actionRef = useRef<HTMLDivElement | null>(null);
 
-    const OPEN_PATH = "M335.5 78.5V16.5C335.5 7.66344 328.337 0.5 319.5 0.5H167.795C164.357 0.5 161.01 1.60772 158.25 3.65903L121.75 30.791C118.99 32.8423 115.643 33.95 112.205 33.95H16.5C7.66344 33.95 0.5 41.1134 0.5 49.95V78.5C0.5 87.3366 7.66345 94.5 16.5 94.5H176H227H319.5C328.337 94.5 335.5 87.3366 335.5 78.5Z";
-    const CLOSED_PATH = "M319.5 0.5H16.5C7.66344 0.5 0.5 7.66345 0.5 16.5V379C0.5 387.837 7.66344 395 16.5 395H169.533C173.077 395 176.521 393.824 179.324 391.655L214.176 364.693C216.979 362.524 220.423 361.348 223.967 361.348H319.5C328.337 361.348 335.5 354.184 335.5 345.348V16.5C335.5 7.66344 328.337 0.5 319.5 0.5Z";
-
+    const CLOSED_PATH ="M150.865 0.5H319.5C328.337 0.5 335.5 7.66344 335.5 16.5V88.5C335.5 97.3366 328.337 104.5 319.5 104.5H16.5C7.66345 104.5 0.5 97.3366 0.5 88.5V50.5C0.5 41.6634 7.66345 34.5 16.5 34.5H95.1351C98.6165 34.5 102.003 33.3645 104.78 31.2659L141.22 3.73412C143.997 1.63546 147.384 0.5 150.865 0.5Z"     
+    const OPEN_PATH = "M214.713 37H319.5C328.337 37 335.5 44.1634 335.5 53V423.5C335.5 432.337 328.337 439.5 319.5 439.5H16.5C7.66345 439.5 0.5 432.337 0.5 423.5V16.5C0.5 7.66344 7.66345 0.5 16.5 0.5H141.787C144.549 0.5 147.263 1.21486 149.667 2.57502L206.833 34.925C209.237 36.2851 211.951 37 214.713 37Z"
     useGSAP(() => {
         if (!pathRef.current) return;
 
@@ -39,15 +43,15 @@ export function CardContainer2({
         });
 
         // 1. Morph de la forme vectorielle
-        tl.to(pathRef.current, {
-            morphSVG: isClosed ? CLOSED_PATH : OPEN_PATH,
+        tl.to([pathRef.current, pathRef1.current], {
+            morphSVG: isClosed ? OPEN_PATH : CLOSED_PATH,
         }, 0);
 
         // 2. Disparition / Apparition du contenu du formulaire
         if (contentRef.current) {
             tl.to(contentRef.current, {
                 opacity: isClosed ? 0 : 1,
-                y: isClosed ? -15 : 0,
+                // y: isClosed ? -15 : 0,
                 pointerEvents: isClosed ? "none" : "auto",
                 duration: 0.3,
             }, 0);
@@ -56,26 +60,26 @@ export function CardContainer2({
         // 3. Déplacement du bouton d'action vers l'encoche haut-gauche
         if (actionRef.current) {
             tl.to(actionRef.current, {
-                top: isClosed ? "1%" : "93%",
-                left: isClosed ? "5%" : "60%",
+                top: !isClosed ? "1%" : "93%",
+                left: !isClosed ? "5%" : "58%",
             }, 0);
         }
 
         // 4. Adaptation de la hauteur du conteneur HTML
         if (containerRef.current) {
             tl.to(containerRef.current, {
-                aspectRatio: isClosed ? "336/95" : "336/396",
-            }, 0);
+            aspectRatio: isClosed ? 336 / 440 : 336 / 105,
+        }, 0);
         }
     }, { dependencies: [isClosed], scope: containerRef });
 
     return (
         <div
             ref={containerRef}
-            className={`relative w-full max-w-[380px] sm:max-w-[420px] ${!isClosed ? 'aspect-[336/95]' : 'aspect-[336/396]'} my-10 ${className}`}
+            className={`relative w-full max-w-84 lg:max-w-105 2xl:max-w-126  ${className}`}
         >
             <svg
-                viewBox={`${isClosed ? '0 0 336 95' : '0 0 336 396'}`}
+                viewBox={`${!isClosed ? '0 0 336 105' : '0 0 336 440'}`}
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
@@ -84,7 +88,13 @@ export function CardContainer2({
                 <path
                     ref={pathRef}
                     d={OPEN_PATH}
-                    fill="url(#paint0_radial_7_32)"
+                    fill="url(#radialGradient)"
+                />
+
+                <path
+                    ref={pathRef1}
+                    d={OPEN_PATH}
+                    fill="none"
                     stroke="#D6BDBD"
                     strokeOpacity="0.4"
                     filter="url(#folderShadow)"
@@ -92,31 +102,43 @@ export function CardContainer2({
 
                 <defs>
                     <radialGradient
-                        id="paint0_radial_7_32"
-                        cx="0"
-                        cy="0"
-                        r="1"
-                        gradientUnits="userSpaceOnUse"
-                        gradientTransform="translate(0.5 0.5) rotate(-132.458) scale(302.94 258.692)"
+                        id="radialGradient"
+                        cx="0%"
+                        cy="20%"
+                        r="100%"
                     >
-                        <stop offset="0.063" stopColor="white" stopOpacity="0.2" />
-                        <stop offset="0.5" stopColor="#10B981" stopOpacity="0.1" />
-                        <stop offset="0.9" stopColor="#171717" stopOpacity="0.2" />
+                        <stop
+                            offset="10%"
+                            stopColor="#5F606A"
+                            stopOpacity="0.8"
+                        />
+
+                        <stop
+                            offset="70%"
+                            stopColor="#10B981"
+                            stopOpacity="0.15"
+                        />
+
+                        <stop
+                            offset="100%"
+                            stopColor="#171717"
+                            stopOpacity="0.1"
+                        />
                     </radialGradient>
 
                     <filter
                         id="folderShadow"
-                        x="-30%"
-                        y="-30%"
-                        width="160%"
-                        height="160%"
+                        x="-50%"
+                        y="-50%"
+                        width="200%"
+                        height="200%"
                         filterUnits="userSpaceOnUse"
                     >
                         <feDropShadow
                             dx="10"
                             dy="10"
-                            stdDeviation="12"
-                            floodColor="#10B981"
+                            stdDeviation="6"
+                            floodColor="#171717"
                             floodOpacity="1"
                         />
                     </filter>
@@ -126,9 +148,14 @@ export function CardContainer2({
             {/* Contenu principal */}
             <div
                 ref={contentRef}
-                className="absolute inset-0 p-5 sm:p-6 pb-12 flex flex-col justify-between z-10"
+                className="absolute inset-0 p-4 flex flex-col justify-center z-10"
             >
-                {children}
+                <div className="w-full mt-7 flex justify-around items-center gap-4">
+                    <FaPhoneAlt className="text-emerald-400 text-2xl sm:text-3xl" />
+                    <Mail className="text-emerald-400 text-2xl sm:text-3xl" />
+                    <FaGithub className="text-emerald-400 text-2xl sm:text-3xl" />
+                    <FaLinkedin className="text-emerald-400 text-2xl sm:text-3xl" />
+                </div>
             </div>
 
             {/* Bouton d'action */}
