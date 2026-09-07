@@ -25,6 +25,7 @@ export function CardContainer({
 }: CardContainerProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const pathRef = useRef<SVGPathElement | null>(null);
+    const pathRef1 = useRef<SVGPathElement | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const actionRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,7 +40,7 @@ export function CardContainer({
         });
 
         // 1. Morph de la forme vectorielle
-        tl.to(pathRef.current, {
+        tl.to([pathRef.current, pathRef1.current], {
             morphSVG: isClosed ? CLOSED_PATH : OPEN_PATH,
         }, 0);
 
@@ -57,7 +58,7 @@ export function CardContainer({
         if (actionRef.current) {
             tl.to(actionRef.current, {
                 top: isClosed ? "1%" : "93%",
-                left: isClosed ? "5%" : "60%",
+                left: isClosed ? "5%" : "58%",
             }, 0);
         }
 
@@ -84,7 +85,13 @@ export function CardContainer({
                 <path
                     ref={pathRef}
                     d={OPEN_PATH}
-                    fill="url(#paint0_radial_7_32)"
+                    fill="url(#radialGradient)"
+                />
+
+                <path
+                    ref={pathRef1}
+                    d={OPEN_PATH}
+                    fill="none"
                     stroke="#D6BDBD"
                     strokeOpacity="0.4"
                     filter="url(#folderShadow)"
@@ -92,31 +99,55 @@ export function CardContainer({
 
                 <defs>
                     <radialGradient
-                        id="paint0_radial_7_32"
-                        cx="0"
-                        cy="0"
-                        r="1"
-                        gradientUnits="userSpaceOnUse"
-                        gradientTransform="translate(0.5 0.5) rotate(-132.458) scale(302.94 258.692)"
+                        id="radialGradient"
+                        cx="0%"
+                        cy="0%"
+                        r="100%"
                     >
-                        <stop offset="0.063" stopColor="white" stopOpacity="0.2" />
-                        <stop offset="0.5" stopColor="#10B981" stopOpacity="0.1" />
-                        <stop offset="0.9" stopColor="#171717" stopOpacity="0.2" />
+                        <stop
+                            offset="0%"
+                            stopColor="white"
+                            stopOpacity="0.3"
+                        />
+
+                        <stop
+                            offset="50%"
+                            stopColor="#10B981"
+                            stopOpacity="0.15"
+                        />
+
+                        <stop
+                            offset="100%"
+                            stopColor="#171717"
+                            stopOpacity="0.1"
+                        />
                     </radialGradient>
+
+                    {/* <filter
+                        id="gradientBlur"
+                        x="-5%"
+                        y="-5%"
+                        width="110%"
+                        height="110%"
+                    >
+                        <feGaussianBlur
+                            stdDeviation="0.2"
+                        />
+                    </filter> */}
 
                     <filter
                         id="folderShadow"
-                        x="-30%"
-                        y="-30%"
-                        width="160%"
-                        height="160%"
+                        x="-50%"
+                        y="-50%"
+                        width="200%"
+                        height="200%"
                         filterUnits="userSpaceOnUse"
                     >
                         <feDropShadow
                             dx="10"
                             dy="10"
-                            stdDeviation="12"
-                            floodColor="#10B981"
+                            stdDeviation="6"
+                            floodColor="#171717"
                             floodOpacity="1"
                         />
                     </filter>

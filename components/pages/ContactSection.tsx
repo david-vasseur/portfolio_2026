@@ -62,19 +62,19 @@ const ContactSection = () => {
                                     whitespace-nowrap
                                 "
                             >
-                                <span>{!isForm ? "Send Message" : "Deploy Form"}</span>
+                                <span>{!isForm ? "Send Message" : "Extend"}</span>
                                 
                             </button>
                         }>
                         <div className="w-full">
-                            <h3 className="text-xl font-bold text-white mb-5">Get In Touch</h3>
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-5">Get In Touch</h3>
                             <form
                                 id="contact-form"
                                 className="space-y-4"
                                 onSubmit={handleSubmit}
                             >
                                 {/* NOM */}
-                                <div className="space-y-1.5">
+                                <div className="space-y-1.5 sm:space-y-1">
                                     <label
                                         htmlFor="name"
                                         className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
@@ -87,12 +87,12 @@ const ContactSection = () => {
                                         id="name"
                                         name="name"
                                         placeholder="John Doe"
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                                     />
                                 </div>
 
                                 {/* EMAIL */}
-                                <div className="space-y-1.5">
+                                <div className="space-y-1.5 sm:space-y-1">
                                     <label
                                         htmlFor="email"
                                         className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
@@ -105,12 +105,12 @@ const ContactSection = () => {
                                         id="email"
                                         name="email"
                                         placeholder="john@example.com"
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                                     />
                                 </div>
 
                                 {/* MESSAGE */}
-                                <div className="space-y-1.5">
+                                <div className="space-y-1.5 sm:space-y-1">
                                     <label
                                         htmlFor="message"
                                         className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
@@ -123,7 +123,7 @@ const ContactSection = () => {
                                         name="message"
                                         rows={4}
                                         placeholder="Tell me about your project..."
-                                        className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
+                                        className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                                     />
                                 </div>
                             </form>
