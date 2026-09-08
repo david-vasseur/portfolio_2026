@@ -289,14 +289,13 @@ if (!isClosed) {
     return (
         <div
             ref={containerRef}
+            style={{ aspectRatio: '336 / 396' }}
             className={`
                 relative
                 w-full
                 flex
                 flex-col
                 justify-start
-                lg:h-full
-                lg:aspect-336/396
                 ${className}
             `}
         >
@@ -388,6 +387,7 @@ if (!isClosed) {
                     flex-col
                     justify-between
                     z-10
+                    h-full
                     aspect-336/396
                 "
             >
