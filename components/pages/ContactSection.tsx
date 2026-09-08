@@ -2,13 +2,27 @@
 
 import Subtitle from '../ui/Subtitle';
 import { CardContainer } from '../features/FormSVG';
-import { useState } from 'react';
-import ContactMapCard from '../features/ContactMapCard';
-import { CardContainer2 } from '../features/TestFigma2';
+import { useEffect, useState } from 'react';
+import { FaMapPin } from 'react-icons/fa';
+import { SVGMap } from '../features/SVGMap';
 
 const ContactSection = () => {
 
     const [isForm, setIsForm] = useState<boolean>(false);
+    const [delayedIsForm, setDelayedIsForm] = useState<boolean>(isForm);
+    const [isAnimationStep1Finish, setIsAnimationStep1Finish] = useState<boolean>(false);
+    const [isAnimationStep2Finish, setIsAnimationStep2Finish] = useState<boolean>(false);
+    console.log(isAnimationStep1Finish ? "animation step1 fini" : "Animation step1 à 0");
+    console.log(isAnimationStep2Finish ? "animation step2 fini" : "Animation step2 à 0");
+    
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDelayedIsForm(isForm);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [isForm]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -21,16 +35,23 @@ const ContactSection = () => {
             
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
                 <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK." /> 
+                <button
+                    type="button"
+                    onClick={() => {
+                        if (window.innerWidth > 1024) return;
+                        setIsForm(!isForm)}
+                    }
+                    className=" bg-emerald-500 text-blue-500 font-bold text-xs sm:text-red-400 rounded-full hover:bg-emerald-600 transition-colors"
+                >
+                    {isForm ? "Show Map" : "Show Form"}
+                </button>
             </div>
 
-            <main className="z-10 min-h-0 w-full h-full max-w-7xl mx-auto lg:aspect-video"> 
-                <div className="relative h-full col-span-1 lg:col-span-3 w-full flex flex-col lg:flex-row justify-evenly gap-12 items-center overflow-hidden pt-0 p-12">
-                    {/* <ContactForm />
-                    <ContactMapCard /> */}
-                    {/* <FolderIcon /> */}
+            <main className="z-1 0 w-full max-w-7xl mx-auto p-12 overflow-hidden flex flex-col items-center justify-between lg:flex-row lg:aspect-[16/10]">
                     <CardContainer
                         isClosed={isForm}
                         handleSubmit={handleSubmit}
+                        onAnimationComplete={() => setIsAnimationStep1Finish(true)}
                         action={
                             <button
                                 type={!isForm ? "submit" : "button"}
@@ -55,19 +76,21 @@ const ContactSection = () => {
                                     whitespace-nowrap
                                 "
                             >
-                                <span>{!isForm ? "Send Message" : "Extend"}</span>
+                                <span>{!delayedIsForm ? "Send Message" : "Click to Expand"}</span>
                             </button>
                         }
                     />
                     {/* <div className="w-full h-full flex items-center bg-red-400 justify-center p-6" /> */}
-                    <CardContainer2 
+                    <SVGMap 
                         isClosed={isForm} 
+                        isFinish={isAnimationStep1Finish}
+                        onAnimationComplete={() => {setIsAnimationStep2Finish(true); setIsAnimationStep1Finish(false)}}
                         action={
                             <button
-                                onClick={() => {
-                                    if (window.innerWidth > 1024) return;
-                                    setIsForm(!isForm)}
-                                }
+                                type={!isForm ? "submit" : "button"}
+                                {...(!isForm
+                                    ? { form: "contact-form" }
+                                    : { onClick: () => {window.innerWidth > 1024 || setIsForm(!isForm)} })}
                                 className="
                                     flex
                                     items-center
@@ -86,12 +109,11 @@ const ContactSection = () => {
                                     whitespace-nowrap
                                 "
                             >
-                                <span>{!isForm ? "Location" : ""}</span> 
+                                <span>{!delayedIsForm ? "Location" : "Links"} {""} {!delayedIsForm ? <FaMapPin /> : ""}</span>
                             </button>
-                        }   
+                        }
                     />
-                        
-                </div>               
+                         
             </main>
        </section>
     );
