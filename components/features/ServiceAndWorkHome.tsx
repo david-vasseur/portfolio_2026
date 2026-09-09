@@ -122,7 +122,7 @@ const ServicesAndWorkHome = () => {
     return (
         <div
             ref={rootRef}
-            className="relative hidden lg:col-span-3 lg:flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:flex-row lg:gap-6"
+            className="relative hidden lg:col-span-3 lg:flex h-full w-full flex-col overflow-hidden rounded-[14px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:flex-row lg:gap-6"
         >
             {/* =====================================================
                 LEFT — PRINCIPLES

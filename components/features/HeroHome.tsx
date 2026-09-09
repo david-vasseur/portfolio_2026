@@ -1,36 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Title from '../ui/Title';
 import Subtitle from '../ui/Subtitle';
 import { ButtonCTA } from '../ui/ButtonCTA';
-import { ArrowDown, ArrowUpRight, FileDown } from 'lucide-react';
+import { ArrowUpRight, FileDown } from 'lucide-react';
+
+// Calcul du path avec biseaux et arrondis fixes
+const getDynamicPath = (W: number, H: number) => {
+    if (W <= 0 || H <= 0) return '';
+    return `
+        M 0 ${H - 36.44}
+        V 14
+        C 0 6.27 6.27 0 14 0
+        H ${Math.max(14, W - 40.18)}
+        C ${W - 36.84} 0 ${W - 33.61} 1.20 ${W - 31.07} 3.37
+        L ${W - 4.89} 25.81
+        C ${W - 1.79} 28.47 ${W} 32.35 ${W} 36.44
+        V ${Math.max(36.44, H - 14)}
+        C ${W} ${H - 6.27} ${W - 6.27} ${H} ${W - 14} ${H}
+        H 40.18
+        C 36.84 ${H} 33.61 ${H - 1.20} 31.07 ${H - 3.37}
+        L 4.89 ${H - 25.81}
+        C 1.79 ${H - 28.47} 0 ${H - 32.35} 0 ${H - 36.44}
+        Z
+    `;
+};
 
 const HeroHome = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [size, setSize] = useState({ width: 0, height: 0 });
+
+    // Observer la taille du conteneur en temps réel
+    useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+            // getBoundingClientRect mesure la taille REELLE totale (padding inclus)
+            const rect = entry.target.getBoundingClientRect();
+            setSize({ width: rect.width, height: rect.height });
+        }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+}, []);
+
+    const pathD = getDynamicPath(size.width, size.height);
+
     return (
-        <div className="relative overflow-hidden  backdrop-blur-md border border-white/60 lg:col-span-2 row-span-2 lg:row-span-3 rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col justify-between shadow-xl">
-            
-            {/* === 1. IMAGE D'ARRIÈRE-PLAN AVEC MASK ET GRADIENT === */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div 
+            ref={containerRef}
+            className="relative lg:col-span-2 row-span-2 lg:row-span-3 p-4 sm:p-8 lg:p-10 flex flex-col justify-between shadow-xl min-h-[320px]"
+        >
+            {/* === SVG DYNAMIQUE EN ARRIÈRE-PLAN (FOND & BORDURE) === */}
+            {size.width > 0 && (
+                <svg 
+    className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
+    width={size.width}
+    height={size.height}
+>
+                    <defs>
+                        {/* Masque pour que l'image reste coincée dans la forme biseautée */}
+                        <clipPath id="hero-clip">
+                            <path d={pathD} />
+                        </clipPath>
+                    </defs>
+
+                    {/* Fond semi-transparent avec effet de flou */}
+                    <path 
+                        d={pathD} 
+                        fill="rgba(255, 255, 255, 0.4)" 
+                        className="backdrop-blur-md"
+                    />
+
+                    {/* Contour / Bordure */}
+                    <path 
+                        d={pathD} 
+                        fill="none" 
+                        stroke="rgba(255, 255, 255, 0.6)" 
+                        strokeWidth="1.5" 
+                    />
+                </svg>
+            )}
+
+            {/* === 1. IMAGE D'ARRIÈRE-PLAN DÉCOUPÉE === */}
+            <div 
+                className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
+                style={{ clipPath: size.width > 0 ? 'url(#hero-clip)' : 'none' }}
+            >
+                <div className='absolute inset-0 bg-linear-to-t from-black/70 to-transparent'/>
                 <div className="absolute inset-0 bg-linear-to-t from-text-1/90 via-text-1/40 to-transparent lg:bg-linear-to-r lg:from-text-1/95 lg:via-text-1/40 lg:to-transparent" />
                 <img 
-                    src="right_png.png" /* Remplace par le chemin de ta photo */
+                    src="right_png.png"
                     alt="David Vasseur" 
                     className="absolute right-0 lg:-right-20 bottom-0 h-full w-full lg:w-3/5 object-cover object-top opacity-20 lg:opacity-85 mix-blend-multiply filter contrast-105 mask-[linear-gradient(to_top,transparent_5%,black_50%)] lg:mask-[linear-gradient(to_right,transparent_0%,black_50%)]"
                 />
-                {/* Overlay supplémentaire pour assurer la lisibilité du texte */}
-                  </div>
+            </div>
 
-            {/* === 2. HAUT : BADGE DE DISPONIBILITÉ === */}
-            {/* <div className="relative z-10 mb-6">
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm text-emerald-800 text-xs font-semibold tracking-wide">
-                    <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    Disponible pour de nouveaux projets
-                </div>
-            </div> */}
-
-            {/* === 3. MILIEU : TITRES ET ACCROCHE === */}
+            {/* === 2. MILIEU : TITRES ET ACCROCHE === */}
             <div className="relative z-10 max-w-xl my-auto">
                 <Title titleContent={["DAVID ", "VASSEUR"]} />
                 <p className="mt-4 text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -38,10 +105,8 @@ const HeroHome = () => {
                 </p>
             </div>
 
-            {/* === 4. BAS : CTA & RÉSEAUX SOCIAUX === */}
+            {/* === 3. BAS : CTA & RÉSEAUX SOCIAUX === */}
             <div className="relative z-10 mt-8 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-                
-                {/* Boutons d'action */}
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                     <ButtonCTA 
                         href="#work" 
@@ -62,9 +127,7 @@ const HeroHome = () => {
                     </ButtonCTA>
                 </div>
 
-                {/* Icônes de contact rapide */}
-                <div className="flex items-center justify-center gap-2 pt-2 sm:pt-0">
-                    {/* GitHub */}
+                <div className="flex rounded-xl  p-2 items-center justify-center gap-2">
                     <a 
                         href="https://github.com/ton-profil" 
                         target="_blank" 
@@ -77,7 +140,6 @@ const HeroHome = () => {
                         </svg>
                     </a>
 
-                    {/* LinkedIn */}
                     <a 
                         href="https://linkedin.com/in/ton-profil" 
                         target="_blank" 
@@ -90,7 +152,6 @@ const HeroHome = () => {
                         </svg>
                     </a>
 
-                    {/* Email */}
                     <a 
                         href="mailto:contact@exemple.com" 
                         aria-label="Email"
@@ -101,10 +162,9 @@ const HeroHome = () => {
                         </svg>
                     </a>
                 </div>
-
             </div>
         </div>
     );
-}
+};
 
 export default HeroHome;

@@ -78,11 +78,11 @@ const Title = ({ titleContent }: TitleProps) => {
     });
 
     return (
-        <h1 ref={titleRef}>
+        <h1 className="text-center lg:text-left" ref={titleRef}>
             {titleContent.map((span, index) => (
                 <React.Fragment key={index}>
                     <span className="text-black text-shadow-[0_0_5px_#5F606A] inline-block h-[2em] lg:h-[5em] xl:h-[6em] overflow-hidden align-bottom">
-                        <span className="text-3xl font-anta lg:text-7xl xl:text-8xl font-bold">
+                        <span className="text-4xl font-anta lg:text-7xl xl:text-8xl font-bold">
                             {span}
                         </span>
                     </span>

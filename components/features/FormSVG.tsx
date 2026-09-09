@@ -14,9 +14,7 @@ interface CardContainerProps extends SVGProps<SVGSVGElement> {
     children?: React.ReactNode;
     action?: React.ReactNode;
     isClosed?: boolean;
-    handleSubmit?: (
-        event: React.FormEvent<HTMLFormElement>
-    ) => void;
+    handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
     onAnimationComplete?: () => void;
 }
 
@@ -28,7 +26,6 @@ export function CardContainer({
     onAnimationComplete,
     ...props
 }: CardContainerProps) {
-
     const isFirstRender = useRef(true);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -43,13 +40,6 @@ export function CardContainer({
     |--------------------------------------------------------------------------
     | PATHS
     |--------------------------------------------------------------------------
-    |
-    | Les deux commencent exactement au même endroit :
-    |
-    | M335.5 16.5
-    |
-    | Toute la partie haute reste donc commune.
-    |
     */
 
     const OPEN_PATH = `
@@ -92,16 +82,10 @@ export function CardContainer({
     |--------------------------------------------------------------------------
     | VIEWBOX
     |--------------------------------------------------------------------------
-    |
-    | On le découple du state React.
-    | Il ne change qu'au moment décidé par la timeline.
-    |
     */
 
     const [svgViewBox, setSvgViewBox] = useState(
-        isClosed
-            ? "0 0 336 61"
-            : "0 0 336 396"
+        isClosed ? "0 0 336 61" : "0 0 336 396"
     );
 
     useGSAP(
@@ -115,170 +99,136 @@ export function CardContainer({
                 return;
             }
 
-            const tl = gsap.timeline({
-                onComplete: () => {
-                // Si ce n'est pas le montage initial, on prévient le parent
-                if (!isFirstRender.current) {
-                    onAnimationComplete?.();
-                } else {
-                    isFirstRender.current = false; // On passe le flag à false après l'entrée
-                }
-            },
-            });
+            // Instanciation du MatchMedia
+            const mm = gsap.matchMedia();
 
-            /*
-            |--------------------------------------------------------------------------
-            | 1. ON EFFACE
-            |--------------------------------------------------------------------------
-            */
+            // S'exécute uniquement sous 1024px
+            mm.add("(max-width: 1023px)", () => {
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        if (!isFirstRender.current) {
+                            onAnimationComplete?.();
+                        } else {
+                            isFirstRender.current = false;
+                        }
+                    },
+                });
 
-            tl.to(
-                actionRef.current,
-                {
+                /*
+                |--------------------------------------------------------------------------
+                | 1. ON EFFACE
+                |--------------------------------------------------------------------------
+                */
+
+                tl.to(actionRef.current, {
                     autoAlpha: 0,
                     duration: 0.1,
                     ease: "power2.in",
+                });
+
+                if (contentRef.current) {
+                    tl.to(
+                        contentRef.current,
+                        {
+                            autoAlpha: 0,
+                            y: isClosed ? -15 : 15,
+                            duration: 0.2,
+                            ease: "power2.in",
+                        },
+                        "-=0.02"
+                    );
                 }
-            );
 
-            if (contentRef.current) {
-                tl.to(
-                    contentRef.current,
-                    {
-                        autoAlpha: 0,
-                        y: isClosed ? -15 : 15,
-                        duration: 0.2,
-                        ease: "power2.in",
-                    },
-                    "-=0.02"
-                );
-            }
+                /*
+                |--------------------------------------------------------------------------
+                | 2. MORPH
+                |--------------------------------------------------------------------------
+                */
 
-            /*
-            |--------------------------------------------------------------------------
-            | 2. MORPH
-            |--------------------------------------------------------------------------
-            |
-            | Le SVG garde temporairement son ancien viewBox.
-            |
-            | On ne touche PAS au layout ici.
-            |
-            */
+                if (!isClosed) {
+                    tl.call(() => {
+                        setSvgViewBox("0 0 336 396");
 
-if (!isClosed) {
-    tl.call(() => {
-        setSvgViewBox("0 0 336 396");
+                        requestAnimationFrame(() => {
+                            if (!containerRef.current) return;
 
-        requestAnimationFrame(() => {
-            if (!containerRef.current) return;
+                            gsap.set(containerRef.current, {
+                                aspectRatio: 336 / 396,
+                            });
 
-            gsap.set(containerRef.current, {
-                aspectRatio: 336 / 396,
-            });
+                            gsap.to([pathRef.current, pathRef1.current], {
+                                morphSVG: OPEN_PATH,
+                                duration: 0.7,
+                                ease: "power3.inOut",
+                                onComplete: () => {
+                                    tl.resume();
+                                },
+                            });
+                        });
+                    });
 
-            gsap.to(
-                [pathRef.current, pathRef1.current],
-                {
-                    morphSVG: OPEN_PATH,
-                    duration: 0.7,
-                    ease: "power3.inOut",
-                    onComplete: () => {
-                        tl.resume();
-                    },
-                }
-            );
-        });
-    });
-
-    // Bloque la timeline jusqu'à la fin du morph
-    tl.addPause();
-
-
-            } else {
-                // ---------------------------------------------------------------
-                // FERMETURE
-                // ---------------------------------------------------------------
-                //
-                // On fait d'abord le morph dans le grand viewport.
-                //
-                // Puis seulement après, on réduit le layout.
-                //
-
-                tl.to(
-                    [pathRef.current, pathRef1.current],
-                    {
+                    tl.addPause();
+                } else {
+                    tl.to([pathRef.current, pathRef1.current], {
                         morphSVG: CLOSED_PATH,
                         duration: 0.7,
                         ease: "power3.inOut",
-                    }
-                );
+                    });
 
-                // tl.call(() => {
-                //     setSvgViewBox("0 0 336 61");
-                // });
+                    tl.call(() => {
+                        setSvgViewBox("0 0 336 61");
+                    });
 
-                // tl.to(
-                //     containerRef.current,
-                //     {
-                //         aspectRatio: 336 / 61,
-                //         duration: 0,
-                //         ease: "power3.inOut",
-                //     }, "+=0.005"
-                // );
+                    tl.call(() => {
+                        requestAnimationFrame(() => {
+                            if (!containerRef.current) return;
 
-                tl.call(() => {
-                    setSvgViewBox("0 0 336 61");
-                });
-
-                tl.call(() => {
-                    requestAnimationFrame(() => {
-                        if (!containerRef.current) return;
-
-                        gsap.set(containerRef.current, {
-                            aspectRatio: 336 / 61,
+                            gsap.set(containerRef.current, {
+                                aspectRatio: 336 / 61,
+                            });
                         });
                     });
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | 3. POSITION DU BOUTON
+                |--------------------------------------------------------------------------
+                */
+
+                tl.set(actionRef.current, {
+                    top: isClosed ? "25%" : "93%",
+                    left: isClosed ? "25%" : "58%",
                 });
-            }
 
-            /*
-            |--------------------------------------------------------------------------
-            | 3. POSITION DU BOUTON
-            |--------------------------------------------------------------------------
-            */
+                /*
+                |--------------------------------------------------------------------------
+                | 4. ON RALLUME
+                |--------------------------------------------------------------------------
+                */
 
-            tl.set(actionRef.current, {
-                top: isClosed ? "25%" : "93%",
-                left: isClosed ? "25%" : "58%",
-            });
-
-            /*
-            |--------------------------------------------------------------------------
-            | 4. ON RALLUME
-            |--------------------------------------------------------------------------
-            */
-
-            tl.to(
-                actionRef.current,
-                {
+                tl.to(actionRef.current, {
                     autoAlpha: 1,
                     duration: 0.1,
                     ease: "power2.out",
-                }
-            );
+                });
 
-            if (!isClosed && contentRef.current) {
-                tl.to(
-                    contentRef.current,
-                    {
-                        autoAlpha: 1,
-                        y: 0,
-                        duration: 0.3,
-                        ease: "power2.out",
-                    },
-                    "+=0.05"
-                );
-            }
+                if (!isClosed && contentRef.current) {
+                    tl.to(
+                        contentRef.current,
+                        {
+                            autoAlpha: 1,
+                            y: 0,
+                            duration: 0.3,
+                            ease: "power2.out",
+                        },
+                        "+=0.05"
+                    );
+                }
+            });
+
+            // Cleanup du MatchMedia lors du démontage
+            return () => mm.revert();
         },
         {
             dependencies: [isClosed],
@@ -289,20 +239,21 @@ if (!isClosed) {
     return (
         <div
             ref={containerRef}
-            style={{ aspectRatio: '336 / 396' }}
             className={`
                 relative
-                w-full
+                lg:w-2/5
+                max-w-[336px]
+                lg:max-w-[402px]
+
+                xl:max-h-[100%]
                 flex
                 flex-col
                 justify-start
+                lg:aspect-336/396
+                lg:flex-1
                 ${className}
             `}
         >
-            {/* ================================================================= */}
-            {/* SVG                                                               */}
-            {/* ================================================================= */}
-
             <svg
                 viewBox={svgViewBox}
                 fill="none"
@@ -317,19 +268,11 @@ if (!isClosed) {
                 "
                 {...props}
             >
-                {/* ============================================================= */}
-                {/* FILL                                                          */}
-                {/* ============================================================= */}
-
                 <path
                     ref={pathRef}
                     d={OPEN_PATH}
                     fill="url(#radialGradient)"
                 />
-
-                {/* ============================================================= */}
-                {/* STROKE                                                        */}
-                {/* ============================================================= */}
 
                 <path
                     ref={pathRef1}
@@ -339,13 +282,7 @@ if (!isClosed) {
                     strokeOpacity="0.4"
                 />
 
-
-                {/* ============================================================= */}
-                {/* DEFS                                                          */}
-                {/* ============================================================= */}
-
                 <defs>
-
                     <radialGradient
                         id="radialGradient"
                         cx="0%"
@@ -373,10 +310,6 @@ if (!isClosed) {
                 </defs>
             </svg>
 
-            {/* ================================================================= */}
-            {/* CONTENT                                                           */}
-            {/* ================================================================= */}
-
             <div
                 ref={contentRef}
                 className="
@@ -401,154 +334,56 @@ if (!isClosed) {
                         className="space-y-4"
                         onSubmit={handleSubmit}
                     >
-                        {/* NOM */}
                         <div className="space-y-1.5 sm:space-y-1">
                             <label
                                 htmlFor="name"
-                                className="
-                                    block
-                                    pl-2
-                                    text-xs
-                                    font-mono
-                                    uppercase
-                                    tracking-wider
-                                    text-slate-300
-                                "
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
                             >
                                 Name
                             </label>
-
                             <input
                                 type="text"
                                 id="name"
                                 name="name"
                                 placeholder="John Doe"
-                                className="
-                                    w-full
-                                    rounded-xl
-                                    border
-                                    border-white/10
-                                    bg-white/5
-                                    px-4
-                                    py-2
-                                    sm:py-2.5
-                                    text-xs
-                                    sm:text-sm
-                                    text-white
-                                    placeholder-slate-500
-                                    outline-none
-                                    backdrop-blur-md
-                                    transition-all
-                                    focus:border-emerald-400/80
-                                    focus:bg-white/10
-                                    focus:ring-1
-                                    focus:ring-emerald-400/80
-                                "
+                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                             />
                         </div>
 
-                        {/* EMAIL */}
                         <div className="space-y-1.5 sm:space-y-1">
                             <label
                                 htmlFor="email"
-                                className="
-                                    block
-                                    pl-2
-                                    text-xs
-                                    font-mono
-                                    uppercase
-                                    tracking-wider
-                                    text-slate-300
-                                "
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
                             >
                                 Email
                             </label>
-
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 placeholder="john@example.com"
-                                className="
-                                    w-full
-                                    rounded-xl
-                                    border
-                                    border-white/10
-                                    bg-white/5
-                                    px-4
-                                    py-2
-                                    sm:py-2.5
-                                    text-xs
-                                    sm:text-sm
-                                    text-white
-                                    placeholder-slate-500
-                                    outline-none
-                                    backdrop-blur-md
-                                    transition-all
-                                    focus:border-emerald-400/80
-                                    focus:bg-white/10
-                                    focus:ring-1
-                                    focus:ring-emerald-400/80
-                                "
+                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                             />
                         </div>
 
-                        {/* MESSAGE */}
                         <div className="space-y-1.5 sm:space-y-1">
                             <label
                                 htmlFor="message"
-                                className="
-                                    block
-                                    pl-2
-                                    text-xs
-                                    font-mono
-                                    uppercase
-                                    tracking-wider
-                                    text-slate-300
-                                "
+                                className="block pl-2 text-xs font-mono uppercase tracking-wider text-slate-300"
                             >
                                 Message
                             </label>
-
                             <textarea
                                 id="message"
                                 name="message"
                                 rows={4}
                                 placeholder="Tell me about your project..."
-                                className="
-                                    w-full
-                                    h-12
-                                    min-[390px]:h-20
-                                    sm:h-28
-                                    resize-none
-                                    rounded-xl
-                                    border
-                                    border-white/10
-                                    bg-white/5
-                                    px-4
-                                    py-2
-                                    sm:py-2.5
-                                    text-xs
-                                    sm:text-sm
-                                    text-white
-                                    placeholder-slate-500
-                                    outline-none
-                                    backdrop-blur-md
-                                    transition-all
-                                    focus:border-emerald-400/80
-                                    focus:bg-white/10
-                                    focus:ring-1
-                                    focus:ring-emerald-400/80
-                                "
+                                className="w-full h-12 min-[390px]:h-20 sm:h-28 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                             />
                         </div>
                     </form>
                 </div>
             </div>
-
-            {/* ================================================================= */}
-            {/* ACTION                                                            */}
-            {/* ================================================================= */}
 
             {action && (
                 <div
