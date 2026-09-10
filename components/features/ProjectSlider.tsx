@@ -68,10 +68,11 @@ export const ProjectSlider: React.FC<ProjectSliderProps> = ({
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* --- COUCHE 1 (Z-0) : IMAGES DU SLIDER --- */}
-            <div className="absolute inset-0 z-0 scale-115 overflow-hidden pointer-events-none rounded-2xl">
+            <div className="absolute inset-0 z-0 lg:scale-115 overflow-hidden pointer-events-none rounded-2xl">
+                <div className='absolute z-50 inset-0 bg-linear-to-r from-slate-900 from-40% to-transparent' />
                 {slides.map((slide, index) => {
                     const isVideo = slide.image.endsWith('.mp4');
-                    const transitionClasses = `absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
+                    const transitionClasses = `absolute right-0 w-3/5 h-full object-cover transition-all duration-700 ease-in-out ${
                         index === currentSlide 
                             ? 'opacity-50 scale-105' 
                             : 'opacity-0 scale-100'
@@ -111,13 +112,13 @@ export const ProjectSlider: React.FC<ProjectSliderProps> = ({
             {/* --- COUCHE 3 (Z-20) : CONTENU TEXTE --- */}
             <div className="relative z-20 my-auto space-y-4 max-w-xl lg:translate-x-6 animate-fadeIn transition-all duration-300">
                 <div>
-                    <span className="text-[10px] lg:ml-12 font-mono uppercase tracking-widest text-emerald-400 font-semibold">
+                    <span className="hidden lg:block text-[10px] lg:ml-12 font-mono uppercase tracking-widest text-emerald-400 font-semibold">
                         Feature 0{currentSlide + 1} / 0{slides.length}
                     </span>
                     <h3 className="text-2xl font-anta lg:ml-12 sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight mt-5">
                         {activeSlide.title}
                     </h3>
-                    <p className="text-xs lg:ml-12 sm:text-sm font-semibold text-slate-300 mt-1">
+                    <p className="text-xs lg:ml-12 sm:text-sm line-clamp-1 font-semibold text-slate-300 mt-1">
                         {activeSlide.subtitle}
                     </p>
                 </div>
@@ -127,11 +128,11 @@ export const ProjectSlider: React.FC<ProjectSliderProps> = ({
                 </p>
 
                 {/* Stacks techniques */}
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="flex flex-nowrap shrink-0 gap-2 pt-1">
                     {activeSlide.techs.map((tech) => (
                         <span 
                             key={tech} 
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 border border-white/10 backdrop-blur-md"
+                            className="text-xs shrink-0 font-medium px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 border border-white/10 backdrop-blur-md"
                         >
                             {tech}
                         </span>

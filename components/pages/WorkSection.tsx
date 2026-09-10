@@ -41,7 +41,7 @@ const projects: Project[] = [
                 description:
                     "End-to-end design and development of a national e-commerce platform built with Next.js. Customer-facing experience, product catalog, checkout flow and administration interface were developed on a modern and scalable architecture.",
                 image:
-                    "/intro_compress.mp4",
+                    "/intro.mp4",
                 techs: ["Next.js", "React", "TypeScript", "PostgreSQL"],
             },
             {
@@ -241,7 +241,7 @@ const WorkSection = () => {
     };
 
     return (
-        <section className="relative flex flex-col h-lvh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-15 px-4 sm:px-8 lg:px-16">
+        <section className="relative flex flex-col h-lvh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-20 px-4 sm:px-8 lg:px-16">
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
                 <Subtitle subtitleContent="THINGS I'VE BUILT. PROBLEMS I'VE SOLVED" />
             </div>
@@ -308,7 +308,7 @@ const WorkSection = () => {
                                 {/* PIED DE CARTE / CTA */}
                                 <div className="flex w-full lg:-translate-x-12 xl:-translate-x-16 items-center justify-between border-t border-white/10 pt-4 z-20">
                                     {isActive ? (
-                                        <div className="pl-4 truncate flex flex-wrap gap-2">
+                                        <div className="hidden pl-4 truncate lg:flex flex-wrap gap-2">
                                             {project.link.map((link, index) => (
                                                 <a
                                                     key={index}

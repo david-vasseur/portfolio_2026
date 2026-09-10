@@ -4,6 +4,7 @@ import React, { SVGProps, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
+import ContactForm from "./ContactForm";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(useGSAP, MorphSVGPlugin);
@@ -329,7 +330,7 @@ export function CardContainer({
                         Get In Touch
                     </h3>
 
-                    <form
+                    {/* <form
                         id="contact-form"
                         className="space-y-4"
                         onSubmit={handleSubmit}
@@ -381,7 +382,8 @@ export function CardContainer({
                                 className="w-full h-12 min-[390px]:h-20 sm:h-28 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 outline-none backdrop-blur-md transition-all focus:border-emerald-400/80 focus:bg-white/10 focus:ring-1 focus:ring-emerald-400/80"
                             />
                         </div>
-                    </form>
+                    </form> */}
+                    <ContactForm />
                 </div>
             </div>
 

@@ -42,6 +42,18 @@ function Wrapper({ children }: { children: React.ReactNode }) {
     };
 
     useEffect(() => {
+    const handleNavigate = (e: Event) => {
+        const customEvent = e as CustomEvent<number>;
+        if (typeof customEvent.detail === 'number') {
+            navigateTo(customEvent.detail);
+        }
+    };
+
+    window.addEventListener('navigate-to-page', handleNavigate);
+    return () => window.removeEventListener('navigate-to-page', handleNavigate);
+}, [pageCount]);
+
+    useEffect(() => {
         if (hasHydrated && currentIndex >= pageCount) {
             setCurrentIndex(pageCount - 1);
         }

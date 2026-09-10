@@ -9,8 +9,13 @@ const pages = [
 ];
 
 const NavBar = () => {
+    const { currentIndex } = usePageIndexStore();
 
-    const { currentIndex, setCurrentIndex } = usePageIndexStore();
+    const handleDotClick = (index: number) => {
+        window.dispatchEvent(
+            new CustomEvent('navigate-to-page', { detail: index })
+        );
+    };
 
     return (
         <nav className="fixed top-2 lg:top-5 left-1/2 z-50 -translate-x-1/2">
@@ -26,7 +31,7 @@ const NavBar = () => {
                             key={page}
                             type="button"
                             aria-label={`Aller à ${page}`}
-                            onClick={() => setCurrentIndex(index)}
+                            onClick={() => handleDotClick(index)}
                             className="group flex h-2 w-2 lg:h-3 lg:w-3 items-center justify-center"
                         >
                             <span

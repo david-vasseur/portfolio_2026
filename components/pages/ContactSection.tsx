@@ -52,7 +52,7 @@ const ContactSection = () => {
                 </button> */}
             </div>
 
-            <main className="z-1 min-h-0 h-full gap-5 lg:gap-20 w-full max-w-7xl mx-auto px-12 pb-12 overflow-hidden flex flex-col items-center justify-between lg:flex-row lg:aspect-16/10">
+            <main className="z-1 min-h-0 h-full gap-5 lg:gap-20 w-full max-w-7xl mx-auto px-6 pb-12 overflow-hidden flex flex-col items-center justify-between lg:flex-row lg:aspect-16/10">
                     <CardContainer
                         isClosed={isForm}
                         handleSubmit={handleSubmit}
