@@ -244,7 +244,7 @@ export function CardContainer({
                 lg:w-2/5
                 max-w-[336px]
                 lg:max-w-[402px]
-
+                w-full
                 xl:max-h-[100%]
                 flex
                 flex-col

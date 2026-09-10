@@ -2,97 +2,83 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ArrowUpRight, ShieldCheck, Workflow, Server } from "lucide-react";
-import { useRef } from "react";
+import { Brain, Compass, MessageSquare, Quote } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-const principles = [
+const softSkills = [
     {
         number: "01",
-        title: "Autonomy",
-        description:
-            "De l'application au déploiement, je maîtrise l'ensemble de la chaîne.",
-        icon: Server,
+        title: "Product Vision",
+        description: "Focused on business value and user experience.",
+        icon: Compass,
     },
     {
         number: "02",
-        title: "Architecture",
-        description:
-            "Frontend, BFF, backend, services et infrastructure séparés selon leurs responsabilités.",
-        icon: Workflow,
+        title: "Pragmatism",
+        description: "Clean, maintainable code without over-engineering.",
+        icon: Brain,
     },
     {
         number: "03",
-        title: "Security",
-        description:
-            "Réseaux isolés, containers rootless et exposition minimale des services.",
-        icon: ShieldCheck,
+        title: "Communication",
+        description: "Making technical concepts clear and keeping the team aligned.",
+        icon: MessageSquare,
     },
 ];
 
-const ServicesAndWorkHome = () => {
-    const rootRef = useRef<HTMLDivElement>(null);
+const quotes = [
+    {
+        quote: "« Simplicity is prerequisite for reliability. »",
+        author: "Edsger W. Dijkstra",
+        tag: "Engineering",
+    },
+    {
+        quote: "« First, solve the problem. Then, write the code. »",
+        author: "John Johnson",
+        tag: "Problem Solving",
+    },
+    {
+        quote: "« Make it work, make it right, make it fast. »",
+        author: "Kent Beck",
+        tag: "Craftsmanship",
+    },
+];
 
+const SoftSkillsAndQuotesHome = () => {
+    const rootRef = useRef<HTMLDivElement>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    // GSAP Entrance
     useGSAP(
         () => {
             const tl = gsap.timeline({ paused: true });
 
-            tl.from(".work-label", {
+            tl.from(".section-label", {
                 opacity: 0,
-                y: 8,
-                duration: 0.5,
+                y: 6,
+                duration: 0.4,
                 ease: "power3.out",
             })
                 .from(
-                    ".principle",
+                    ".skill-item",
                     {
                         opacity: 0,
-                        x: -15,
-                        duration: 0.6,
-                        stagger: 0.1,
+                        x: -10,
+                        duration: 0.4,
+                        stagger: 0.06,
                         ease: "power3.out",
                     },
                     "-=0.2"
                 )
                 .from(
-                    ".principle-line",
+                    ".quote-card",
                     {
-                        scaleX: 0,
-                        transformOrigin: "left center",
+                        opacity: 0,
+                        x: 15,
                         duration: 0.5,
-                        stagger: 0.1,
-                        ease: "power3.inOut",
-                    },
-                    "-=0.45"
-                )
-                .from(
-                    ".featured",
-                    {
-                        opacity: 0,
-                        x: 20,
-                        duration: 0.7,
                         ease: "power3.out",
                     },
-                    "-=0.45"
-                )
-                .from(
-                    ".featured-content",
-                    {
-                        opacity: 0,
-                        y: 10,
-                        duration: 0.6,
-                        ease: "power3.out",
-                    },
-                    "-=0.35"
-                )
-                .from(
-                    ".featured-tag",
-                    {
-                        opacity: 0,
-                        scale: 0.9,
-                        duration: 0.4,
-                        ease: "back.out(1.5)",
-                    },
-                    "-=0.25"
+                    "-=0.3"
                 );
 
             const observer = new IntersectionObserver(
@@ -103,9 +89,7 @@ const ServicesAndWorkHome = () => {
                         tl.pause(0);
                     }
                 },
-                {
-                    threshold: 0.2,
-                }
+                { threshold: 0.2 }
             );
 
             if (rootRef.current) {
@@ -114,161 +98,144 @@ const ServicesAndWorkHome = () => {
 
             return () => observer.disconnect();
         },
-        {
-            scope: rootRef,
-        }
+        { scope: rootRef }
     );
+
+    // GSAP Quote Loop Animation
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const nextIndex = (currentIndex + 1) % quotes.length;
+
+            gsap.to(".quote-anim", {
+                y: -12,
+                opacity: 0,
+                duration: 0.35,
+                ease: "power2.in",
+                onComplete: () => {
+                    setCurrentIndex(nextIndex);
+                    gsap.set(".quote-anim", { y: 12, opacity: 0 });
+                    gsap.to(".quote-anim", {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.4,
+                        stagger: 0.04,
+                        ease: "power3.out",
+                    });
+                },
+            });
+        }, 4500);
+
+        return () => clearInterval(timer);
+    }, [currentIndex]);
+
+    const currentQuote = quotes[currentIndex];
 
     return (
         <div
             ref={rootRef}
-            className="relative hidden lg:col-span-3 lg:flex h-full w-full flex-col overflow-hidden rounded-[14px] border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6 lg:flex-row lg:gap-6"
+            className="relative hidden lg:col-span-3 lg:row-span-1 lg:flex h-full w-full items-center overflow-hidden rounded-[14px] border border-white/10 bg-white/5 p-3.5 sm:p-4 backdrop-blur-md gap-4 lg:gap-5"
         >
             {/* =====================================================
-                LEFT — PRINCIPLES
+                LEFT — SOFT SKILLS (COMPACT)
             ====================================================== */}
-
-            <div className="flex min-w-0 flex-1 flex-col justify-between lg:max-w-[42%]">
-                <div className="work-label">
-                    <div className="mb-2 flex items-center justify-between">
-                        <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">
-                            Approach
-                        </span>
-
-                        <span className="font-mono text-[9px] text-white/20">
-                            03 principles
-                        </span>
-                    </div>
-
-                    <h3 className="text-xl font-medium tracking-[-0.03em] text-white">
-                        How I build.
-                    </h3>
+            <div className="flex h-full min-w-0 flex-1 flex-col justify-between lg:max-w-[50%]">
+                <div className="section-label flex items-center justify-between">
+                    <span className="text-[9px] font-medium uppercase tracking-[0.25em] text-white/40">
+                        Mindset & Soft Skills
+                    </span>
+                    <span className="font-mono text-[9px] text-white/20">
+                        03 pillars
+                    </span>
                 </div>
 
-                <div className="my-5 space-y-3">
-                    {principles.map((principle) => {
-                        const Icon = principle.icon;
-
+                <div className="space-y-1.5 my-auto">
+                    {softSkills.map((skill) => {
+                        const Icon = skill.icon;
                         return (
                             <div
-                                key={principle.number}
-                                className="principle group relative"
+                                key={skill.number}
+                                className="skill-item flex items-center gap-2 min-w-0"
                             >
-                                <div className="flex items-start gap-3">
-                                    <span className="font-mono pt-0.5 text-[9px] text-white/20">
-                                        {principle.number}
+                                <Icon
+                                    size={12}
+                                    strokeWidth={1.75}
+                                    className="text-white/40 shrink-0"
+                                />
+                                <div className="min-w-0 flex-1 flex items-baseline gap-2">
+                                    <h4 className="text-[11px] font-semibold text-white/80 shrink-0">
+                                        {skill.title}
+                                    </h4>
+                                    <span className="text-[10px] text-white/35 truncate">
+                                        — {skill.description}
                                     </span>
-
-                                    <div className="min-w-0 flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <Icon
-                                                size={13}
-                                                strokeWidth={1.5}
-                                                className="text-white/35 transition-colors duration-300 group-hover:text-white/70"
-                                            />
-
-                                            <h4 className="text-xs font-medium uppercase tracking-[0.12em] text-white/75">
-                                                {principle.title}
-                                            </h4>
-                                        </div>
-
-                                        <p className="mt-1 max-w-sm text-[10px] leading-relaxed text-white/35">
-                                            {principle.description}
-                                        </p>
-                                    </div>
                                 </div>
-
-                                <div className="principle-line mt-3 h-px w-full bg-white/10" />
                             </div>
                         );
                     })}
                 </div>
 
-                <span className="work-label text-[9px] uppercase tracking-[0.22em] text-white/20">
-                    From code to infrastructure
-                </span>
+                {/* <div className="section-label text-[8px] uppercase tracking-[0.2em] text-white/20">
+                    Savoir-être & méthode
+                </div> */}
             </div>
 
-            {/* =====================================================
-                SEPARATOR
-            ====================================================== */}
-
-            <div className="my-5 hidden w-px bg-white/10 lg:block" />
+            {/* SEPARATOR */}
+            <div className="h-full w-px bg-white/10" />
 
             {/* =====================================================
-                RIGHT — FEATURED WORK
+                RIGHT — ANIMATED GSAP QUOTES (COMPACT)
             ====================================================== */}
+            <div className="quote-card relative flex h-full min-w-0 flex-1 flex-col justify-between overflow-hidden rounded-xl border border-white/10 bg-black/20 p-3 lg:p-3.5">
+                {/* Background glow */}
+                <div className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-white/5 blur-2xl" />
 
-            <div className="featured relative flex min-w-0 flex-1 flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-black/20 p-5">
-                {/* ambient light */}
-
-                <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-white/4 blur-3xl" />
-
+                {/* Header */}
                 <div className="relative z-10 flex items-center justify-between">
-                    <span className="featured-tag inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[9px] uppercase tracking-[0.15em] text-white/60">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
-                        Featured work
-                    </span>
+                    <div className="quote-anim flex items-center gap-1.5">
+                        <Quote size={11} className="text-white/40" />
+                        <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[8px] uppercase tracking-[0.12em] text-white/60">
+                            {currentQuote.tag}
+                        </span>
+                    </div>
 
-                    <span className="font-mono text-[9px] text-white/20">
-                        01
+                    <span className="font-mono text-[8px] text-white/20">
+                        0{currentIndex + 1}/0{quotes.length}
                     </span>
                 </div>
 
-                <div className="featured-content relative z-10 my-5">
-                    <span className="mb-2 block text-[9px] uppercase tracking-[0.25em] text-white/25">
-                        TrouveTonMarché
-                    </span>
-
-                    <h4 className="max-w-lg text-lg font-medium tracking-tight text-white sm:text-xl">
-                        Une architecture full-stack pensée de bout en bout.
+                {/* Animated Text */}
+                <div className="relative z-10 my-auto py-1">
+                    <h4 className="quote-anim text-xs sm:text-sm font-medium tracking-tight text-white/90 leading-tight italic">
+                        {currentQuote.quote}
                     </h4>
-
-                    <p className="mt-2 max-w-lg text-[10px] leading-relaxed text-white/40 sm:text-xs">
-                        Next.js comme frontend et BFF, NestJS pour le backend,
-                        PostgreSQL, Docker et des réseaux isolés pour contrôler
-                        précisément l'exposition de chaque service.
+                    <p className="quote-anim mt-1 text-[10px] font-mono text-white/40">
+                        — {currentQuote.author}
                     </p>
+                </div>
 
-                    <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5">
-                        {[
-                            "Next.js",
-                            "NestJS",
-                            "Prisma",
-                            "Docker",
-                            "PostgreSQL",
-                        ].map((item) => (
-                            <span
-                                key={item}
-                                className="text-[9px] text-white/30 transition-colors duration-300 hover:text-white/70"
-                            >
-                                {item}
-                            </span>
+                {/* Indicators */}
+                <div className="relative z-10 flex items-center justify-between border-t border-white/10 pt-1.5">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-white/25">
+                        Dev Philosophy
+                    </span>
+                    <div className="flex gap-1">
+                        {quotes.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                className={`h-1 rounded-full transition-all duration-300 ${
+                                    idx === currentIndex
+                                        ? "w-4 bg-white/70"
+                                        : "w-1 bg-white/20 hover:bg-white/40"
+                                }`}
+                                aria-label={`Go to quote ${idx + 1}`}
+                            />
                         ))}
                     </div>
-                </div>
-
-                <div className="relative z-10 flex items-center justify-between border-t border-white/10 pt-4">
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-white/25">
-                        Architecture case study
-                    </span>
-
-                    <a
-                        href="#work"
-                        className="group inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.15em] text-white/70 transition-colors duration-300 hover:text-white"
-                    >
-                        <span>Explore work</span>
-
-                        <ArrowUpRight
-                            size={13}
-                            strokeWidth={1.5}
-                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                        />
-                    </a>
                 </div>
             </div>
         </div>
     );
 };
 
-export default ServicesAndWorkHome;
+export default SoftSkillsAndQuotesHome;

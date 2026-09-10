@@ -3,28 +3,65 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef, useState, useEffect } from "react";
+import { IconType } from "react-icons";
+import {
+    SiNextdotjs,
+    SiReact,
+    SiTypescript,
+    SiNestjs,
+    SiPrisma,
+    SiPostgresql,
+    SiDocker,
+    SiNginx,
+    SiUbuntu,
+} from "react-icons/si";
+import { FaNetworkWired } from "react-icons/fa6";
 
-const stack = [
+type StackItem = {
+    label: string;
+    icon: IconType;
+    color: string;
+};
+
+type StackGroup = {
+    number: string;
+    title: string;
+    items: StackItem[];
+};
+
+const stack: StackGroup[] = [
     {
         number: "01",
         title: "Frontend",
-        items: ["Next.js", "React", "TypeScript"],
+        items: [
+            { label: "Next.js", icon: SiNextdotjs, color: "#FFFFFF" },
+            { label: "React", icon: SiReact, color: "#61DAFB" },
+            { label: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+        ],
     },
     {
         number: "02",
         title: "Backend",
-        items: ["NestJS", "Prisma", "PostgreSQL"],
+        items: [
+            { label: "NestJS", icon: SiNestjs, color: "#E0234E" },
+            { label: "Prisma", icon: SiPrisma, color: "#5A67D8" },
+            { label: "PostgreSQL", icon: SiPostgresql, color: "#336791" },
+        ],
     },
     {
         number: "03",
-        title: "Infrastructure",
-        items: ["Docker", "Nginx", "Ubuntu", "Private Networks"],
+        title: "Infra",
+        items: [
+            { label: "Docker", icon: SiDocker, color: "#2496ED" },
+            { label: "Nginx", icon: SiNginx, color: "#009639" },
+            { label: "Ubuntu", icon: SiUbuntu, color: "#E95420" },
+            // { label: "Private Networks", icon: FaNetworkWired, color: "#6366F1" },
+        ],
     },
 ];
 
 const services = ["Stripe", "Resend", "Google Cloud Storage"];
 
-// Calcul dynamique du chemin SVG basé sur les nouvelles dimensions de ton encoche
 const getDynamicPath = (W: number, H: number) => {
     if (W <= 0 || H <= 0) return "";
 
@@ -33,7 +70,6 @@ const getDynamicPath = (W: number, H: number) => {
     const span = Math.min(maxSpan, cx - 20);
     const scale = span / maxSpan;
 
-    // Deltas recalculés d'après ton nouveau path (centre x = 195)
     const d1 = 65.799 * scale;
     const d2 = 62.086 * scale;
     const d3 = 58.525 * scale;
@@ -67,26 +103,102 @@ const getDynamicPath = (W: number, H: number) => {
     `;
 };
 
-const TechStackHome = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
+const TechStackBackground = ({
+    containerRef,
+}: {
+    containerRef: React.RefObject<HTMLDivElement | null>;
+}) => {
     const [size, setSize] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
         if (!containerRef.current) return;
 
+        let frameId: number;
         const observer = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                const rect = entry.target.getBoundingClientRect();
-                setSize({ width: rect.width, height: rect.height });
-            }
+            frameId = requestAnimationFrame(() => {
+                for (const entry of entries) {
+                    const rect = entry.target.getBoundingClientRect();
+                    setSize({ width: rect.width, height: rect.height });
+                }
+            });
         });
 
         observer.observe(containerRef.current);
-        return () => observer.disconnect();
-    }, []);
+        return () => {
+            observer.disconnect();
+            cancelAnimationFrame(frameId);
+        };
+    }, [containerRef]);
+
+    if (size.width === 0) return null;
+
+    const pathD = getDynamicPath(size.width, size.height);
+
+    return (
+        <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
+            width={size.width}
+            height={size.height}
+        >
+            <path
+                d={pathD}
+                fill="rgba(255, 255, 255, 0.05)"
+                className="backdrop-blur-md"
+            />
+            <path
+                d={pathD}
+                fill="none"
+                stroke="#D6BDBD"
+                strokeOpacity="0.3"
+                strokeWidth="1"
+            />
+        </svg>
+    );
+};
+
+const TechStackHome = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+    // 1. On fige l'opacité de départ immédiatement à 1 (pas de fondu)
+    gsap.set(".tech-badge", { opacity: 1 });
+
+    const playRandomNeonFlicker = () => {
+        const tl = gsap.timeline({
+            onComplete: () => {
+                // Temps de pause aléatoire avant le PROCHAIN dysfonctionnement (ex: entre 2.5s et 6s)
+                const nextRandomDelay = gsap.utils.random(2.5, 6);
+                gsap.delayedCall(nextRandomDelay, playRandomNeonFlicker);
+            },
+        });
+
+        // Nombre de micro-coupures aléatoire pour CE cycle (ex: entre 3 et 6 sauts)
+        const flickerCount = gsap.utils.random(3, 6, 1);
+
+        // Génération des micro-coupures imprévisibles
+        for (let i = 0; i < flickerCount; i++) {
+            tl.to(".tech-badge", {
+                opacity: gsap.utils.random(0.05, 0.3),  // Chute d'opacité aléatoire
+                duration: gsap.utils.random(0.02, 0.06), // Durée du bug ultra court
+                ease: "none",
+            }).to(".tech-badge", {
+                opacity: gsap.utils.random(0.7, 1),     // Rebond d'intensité aléatoire
+                duration: gsap.utils.random(0.02, 0.08),
+                ease: "none",
+            });
+        }
+
+        // Remise à 100% nette à la fin du grésillement
+        tl.to(".tech-badge", { opacity: 1, duration: 0.04 });
+    };
+
+    // Lancer le premier grésillement après 2 secondes d'affichage stable
+    gsap.delayedCall(2, playRandomNeonFlicker);
+}, { scope: containerRef });
 
     useGSAP(
         () => {
+
             const tl = gsap.timeline({ paused: true });
 
             tl.from(".tech-badge", {
@@ -167,84 +279,81 @@ const TechStackHome = () => {
         { scope: containerRef }
     );
 
-    const pathD = getDynamicPath(size.width, size.height);
-
     return (
         <div
             ref={containerRef}
-            className="relative flex row-span-1 lg:row-span-3 h-full flex-col justify-between p-6 sm:p-8 pt-7 min-h-[320px]"
+            className="relative flex row-span-1 lg:row-span-3 h-full flex-col justify-between p-4 sm:p-8 pt-7"
         >
-            {/* === SVG EN ARRIÈRE-PLAN === */}
-            {size.width > 0 && (
-                <svg
-                    className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
-                    width={size.width}
-                    height={size.height}
-                >
-                    <path
-                        d={pathD}
-                        fill="rgba(255, 255, 255, 0.05)"
-                        className="backdrop-blur-md"
-                    />
-                    <path
-                        d={pathD}
-                        fill="none"
-                        stroke="#D6BDBD"
-                        strokeOpacity="0.3"
-                        strokeWidth="1"
-                    />
-                </svg>
-            )}
+            <TechStackBackground containerRef={containerRef} />
 
-            {/* === BADGE DANS L'ENCOCHE === */}
-            <div className="tech-badge absolute top-0 left-1/2 -translate-x-1/2 h-[20px] flex items-center justify-center z-10 pointer-events-none">
-                <span className="text-[9px] text-emerald-400 uppercase tracking-widest flex items-center font-bold">
+            {/* BADGE DANS L'ENCOCHE */}
+            <div className="tech-badge absolute top-0 left-1/2 -translate-x-1/2 h-5 flex items-center justify-center z-10 pointer-events-none">
+                <span className="text-[9px] text-emerald-400 uppercase tracking-widest flex items-center font-bold drop-shadow-[0_0_4px_rgba(52,211,153,0.8)]">
                     Open to work
                 </span>
             </div>
 
             {/* HEADER */}
             <div className="tech-header relative z-10 pt-2">
-                <h3 className="text-lg font-bold font-anta tracking-tight text-white">
+                <h3 className="text-xl text-center lg:text-left font-bold font-anta tracking-tight text-white">
                     Fullstack Web Development
                 </h3>
             </div>
 
-            {/* STACK */}
-            <div className="relative z-10 my-6 flex flex-1 flex-col justify-center">
+            {/* STACK : FLEX-COL SUR MOBILE, FLEX-ROW SUR DESKTOP (LG) */}
+            <div className="relative z-10 my-2 lg:my-6 flex flex-1 flex-col justify-evenly">
                 <div className="tech-divider mb-5 h-px w-full bg-white/10" />
 
-                <div className="space-y-5">
+                <div className="flex flex-row lg:flex-col justify-between gap-5 lg:gap-6">
                     {stack.map((group) => (
                         <div
                             key={group.number}
-                            className="tech-row grid grid-cols-[28px_1fr] gap-3"
+                            className="tech-row justify-center lg:flex lg:flex-col gap-3 flex-1"
                         >
-                            <span className="font-mono text-[9px] text-white/20">
+                            <h4 className="flex items-baseline gap-2 font-mono text-[9px] text-white/20">
                                 {group.number}
-                            </span>
-
-                            <div>
-                                <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-[0.18em] text-white/80">
+                                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/80">
                                     {group.title}
                                 </span>
+                            </h4>
 
-                                <div className="flex flex-wrap gap-x-3 gap-y-1">
-                                    {group.items.map((item) => (
+                            <div>
+                                {/* VUE MOBILE (< lg) : ICÔNES */}
+                                <div className="flex items-center justify-center flex-wrap gap-2 lg:hidden">
+                                    {group.items.map((item) => {
+                                        const Icon = item.icon;
+                                        return (
+                                            <div
+                                                key={item.label}
+                                                title={item.label}
+                                                className="tech-item flex pt-2 items-center justify-center gap-1"
+                                            >
+                                                <Icon className="w-5 h-5" style={{ color: item.color }} />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* VUE DESKTOP (>= lg) : LISTE TEXTE D'ORIGINE */}
+                                <div className="hidden lg:flex lg:flex-wrap gap-x-3 gap-y-1">
+                                    {group.items.map((item) => {
+                                        const Icon = item.icon;
+                                        return (
+                                        
                                         <span
-                                            key={item}
-                                            className="tech-item text-[11px] text-white/40 transition-colors duration-300 hover:text-white"
+                                            key={item.label}
+                                            className="tech-item inline-flex gap-2 items-center text-[11px] text-white/40 transition-colors duration-300 hover:text-white"
                                         >
-                                            {item}
+                                            {item.label} <Icon className="w-4 h-4" style={{ color: item.color }} />
                                         </span>
-                                    ))}
+                                    )})}
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="tech-services mt-6 border-t border-white/10 pt-4">
+                <div className="hidden lg:block tech-services mt-6 border-t border-white/10 pt-4">
                     <span className="mb-2 block text-[9px] uppercase tracking-[0.25em] text-white/25">
                         Services
                     </span>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -10,76 +10,84 @@ type SubtitleProps = {
 };
 
 const Subtitle = ({ subtitleContent }: SubtitleProps) => {
-
     const subtitleRef = useRef<HTMLParagraphElement | null>(null);
 
-    useGSAP(() => {
+    const match = subtitleContent.match(/^([^.?!]*[.?!])([\s\S]*)$/);
+    const firstPart = match ? match[1] : subtitleContent;
+    const secondPart = match ? match[2] : "";
 
-        if (!subtitleRef.current) return;
+    useGSAP(
+        () => {
+            if (!subtitleRef.current) return;
 
-        const split = SplitText.create(subtitleRef.current, {
-            type: "words",
-        });
+            let split: SplitText | null = null;
+            let observer: IntersectionObserver | null = null;
 
-        gsap.set(split.words, {
-            opacity: 0,
-            y: 20,
-            filter: "blur(8px)",
-        });
+            // On attend que le navigateur ait fini d'importer toutes les polices
+            document.fonts.ready.then(() => {
+                if (!subtitleRef.current) return;
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
+                split = new SplitText(subtitleRef.current, {
+                    type: "words",
+                });
 
-                if (entry.isIntersecting) {
+                gsap.set(split.words, {
+                    opacity: 0,
+                    y: 20,
+                    filter: "blur(8px)",
+                });
 
-                    gsap.to(split.words, {
-                        opacity: 1,
-                        y: 0,
-                        filter: "blur(0px)",
-                        duration: 0.8,
-                        ease: "power3.out",
-                        stagger: {
-                            each: 0.035,
-                        },
-                    });
+                observer = new IntersectionObserver(
+                    ([entry]) => {
+                        if (entry.isIntersecting && split) {
+                            gsap.to(split.words, {
+                                opacity: 1,
+                                y: 0,
+                                filter: "blur(0px)",
+                                duration: 0.8,
+                                ease: "power3.out",
+                                stagger: { each: 0.035 },
+                            });
+                        } else if (split) {
+                            gsap.set(split.words, {
+                                opacity: 0,
+                                y: 20,
+                                filter: "blur(8px)",
+                            });
+                        }
+                    },
+                    { threshold: 0.3 }
+                );
 
-                } else {
+                observer.observe(subtitleRef.current);
+            });
 
-                    gsap.set(split.words, {
-                        opacity: 0,
-                        y: 20,
-                        filter: "blur(8px)",
-                    });
-
-                }
-
-            },
-            {
-                threshold: 0.3,
-            }
-        );
-
-        observer.observe(subtitleRef.current);
-
-        return () => {
-            observer.disconnect();
-            split.revert();
-        };
-
-    }, {
-        scope: subtitleRef,
-    });
+            return () => {
+                if (observer) observer.disconnect();
+                if (split) split.revert();
+            };
+        },
+        {
+            scope: subtitleRef,
+            dependencies: [subtitleContent],
+        }
+    );
 
     return (
-        <p
+       <p
             ref={subtitleRef}
             className="max-w-2xl text-center text-sm lg:text-lg leading-relaxed text-text-1 italic"
         >
-            {subtitleContent}
+            {match ? (
+                <>
+                    {firstPart}
+                    <span className="font-bold text-white">{secondPart}</span>
+                </>
+            ) : (
+                subtitleContent
+            )}
         </p>
     );
 };
-
-
 
 export default Subtitle;

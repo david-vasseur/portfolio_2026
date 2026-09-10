@@ -3,10 +3,7 @@
 import Subtitle from '../ui/Subtitle';
 import { CardContainer } from '../features/FormSVG';
 import { useEffect, useState } from 'react';
-import { FaGithub, FaLinkedin, FaMailchimp, FaMapPin, FaPhone } from 'react-icons/fa';
-import { SVGMap } from '../features/SVGMap';
 import dynamic from 'next/dynamic';
-import { Mail } from 'lucide-react';
 import MapComponent from '../features/MapComponent';
 
 
@@ -42,7 +39,7 @@ const ContactSection = () => {
         <section className="relative flex flex-col h-lvh w-full gap-5 items-center overflow-hidden pt-15 lg:pt-20 pb-6 sm:px-8 lg:px-16">
             
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
-                <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK." /> 
+                <Subtitle subtitleContent="HAVE A PROJECT IN MIND? LET'S TALK" /> 
                 {/* <button
                     type="button"
                     onClick={() => {

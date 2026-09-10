@@ -49,8 +49,8 @@ export default function MapComponent({ isForm, animationFinish }: MapComponentPr
             className="
                 relative
                 w-full
-                max-w-[336px]
-                lg:max-w-[360px]
+                max-w-84
+                lg:max-w-90
                 xl:max-w-none
                 lg:w-3/5
                 flex
@@ -89,10 +89,12 @@ export default function MapComponent({ isForm, animationFinish }: MapComponentPr
             <div
                 ref={cardRef}
                 className="
+                    lg:shadow-xl
+                    lg:shadow-black/20
                     relative
                     w-full
-                    h-[90px]
-                    lg:h-[380px]
+                    h-22.5
+                    lg:h-95
                     overflow-hidden
                     border
                     border-[#D6BDBD]/40
@@ -141,17 +143,18 @@ export default function MapComponent({ isForm, animationFinish }: MapComponentPr
 
                     {/* Bloc Adresse sur la carte (Desktop) */}
                     <div className="absolute top-4 left-4 z-20 bg-zinc-900/80 backdrop-blur-md border border-white/10 p-3.5 rounded-xl text-white">
-                        <h3 className="font-bold text-sm tracking-wide">Atelier Estézargues</h3>
-                        <p className="text-xs text-zinc-400 mt-0.5">Gard, Occitanie — France</p>
+                        <h3 className="font-bold text-lg tracking-wide">Estézargues</h3>
+                        <p className="font-base text-sm tracking-wide italic">Between Nîmes & Avignon</p>
+                        <p className="text-xs text-zinc-400 mt-0.5">Gard, Occitanie - France</p>
                     </div>
                 </div>
             </div>
 
             {/* Cadre "Instant Contact" sous la carte : Desktop uniquement */}
             <div className="hidden lg:flex items-center justify-start p-4 ">
-                <div className='p-2 broder-white/50 border rounded-xl -skew-x-12 bg-zinc-900/40 backdrop-blur-sm"'>
+                <div className='p-2 broder-white/20 border-[0.5px] rounded-xl -skew-x-12 bg-zinc-900/40 backdrop-blur-sm"'>
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Instant Contact</h4>
-                    <p className="text-xs text-zinc-400">Disponible pour échanger sur vos projets</p>
+                    <p className="text-xs text-zinc-400">Available to discuss your projects</p>
                 </div>
                 <div className="flex items-center ml-10 gap-5 text-zinc-200">
                     <FaPhone className="text-3xl hover:text-emerald-400 cursor-pointer transition-colors" />

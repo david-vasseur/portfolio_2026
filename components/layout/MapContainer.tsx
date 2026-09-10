@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -55,8 +55,18 @@ interface MapContainerProps {
 }
 
 export default function MapContainerComponent({ sectionIndex = 3 }: MapContainerProps) {
+
+    const [isMounted, setIsMounted] = useState(false);
+
+        useEffect(() => {
+            setIsMounted(true);
+        }, []);
+
+    if (!isMounted) return null;
+
     return (
         <MapContainer
+            key="leaflet-map-estezargues"
             center={ESTEZARGUES_COORDINATES}
             zoom={INITIAL_ZOOM}
             zoomSnap={0}

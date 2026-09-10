@@ -243,7 +243,7 @@ const WorkSection = () => {
     return (
         <section className="relative flex flex-col h-lvh w-full justify-center items-center overflow-hidden pt-15 lg:pt-20 pb-15 px-4 sm:px-8 lg:px-16">
             <div className="relative col-span-3 row-span-1 w-full self-center flex justify-center items-center overflow-hidden p-6 text-center"> 
-                <Subtitle subtitleContent="THINGS I'VE BUILT. PROBLEMS I'VE SOLVED." />
+                <Subtitle subtitleContent="THINGS I'VE BUILT. PROBLEMS I'VE SOLVED" />
             </div>
             <main className="z-10 min-h-0 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch justify-center p-2 sm:p-4 gap-3 sm:gap-4 lg:aspect-video">   
                 
@@ -257,7 +257,7 @@ const WorkSection = () => {
                             key={project.id}
                             onClick={() => setActiveId(project.id)}
                             className={`
-                                relative h-full transition-all duration-500 ease-in-out cursor-pointer overflow-hidden rounded-2xl border border-white/10
+                                relative h-full transition-all duration-500 ease-in-out cursor-pointer overflow-hidden rounded-[14px] border border-white/10
                                 transform skew-x-0 lg:-skew-x-12 shadow-black/50
                                 ${flexClass}
                                 ${isActive 
