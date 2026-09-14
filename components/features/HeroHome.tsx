@@ -1,6 +1,7 @@
+"use client"
+
 import React, { useState, useEffect, useRef, useId } from 'react';
 import Title from '../ui/Title';
-import Subtitle from '../ui/Subtitle';
 import { ButtonCTA } from '../ui/ButtonCTA';
 import { ArrowUpRight, FileDown } from 'lucide-react';
 
@@ -122,7 +123,9 @@ const HeroHome = () => {
             <div className="relative z-10 mt-8 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                     <ButtonCTA 
-                        href="#work" 
+                        onClick={() => { window.dispatchEvent(
+                            new CustomEvent('navigate-to-page', { detail: 1 })
+                        );}}
                         variant="glowMesh" 
                         size="md"
                         icon={<ArrowUpRight className="w-4 h-4" />}
